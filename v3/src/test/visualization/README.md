@@ -40,7 +40,7 @@ Based on the codebase analysis, we need to test the following visualization comp
    - Status: Initial tests created ✅
 
 6. **Dot Chart** (`components/graph/plots/dot-chart/dot-chart.tsx`)
-   - Status: Not tested yet
+   - Status: Initial tests created ✅
 
 7. **Line Plot** (`components/graph/plots/line-plot/line-plot.tsx`)
    - Status: Not tested yet
@@ -89,7 +89,7 @@ For each visualization component, we should test:
 - [x] Create test for Dot Plot component
 - [x] Create test for Case Plot component
 - [x] Create test for Binned Dot Plot component
-- [ ] Create test for Dot Chart component
+- [x] Create test for Dot Chart component
 
 ### Medium Priority
 - [ ] Create test for Line Plot component
