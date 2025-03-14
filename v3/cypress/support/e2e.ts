@@ -29,3 +29,6 @@ import "cypress-real-events"
 Cypress.on("uncaught:exception", err => !err.message.includes("ResizeObserver"))
 
 Cypress.on("uncaught:exception", err => !err.message.includes("not a function"))
+
+// Ignore CODAP request timeout errors
+Cypress.on("uncaught:exception", err => !err.message.includes("CODAP request timed out"))
