@@ -159,3 +159,33 @@ Remember not to commit any of these debug-only changes to the repository.
 Starter Projects are Copyright 2022 (c) by the Concord Consortium and is distributed under the [MIT license](http://www.opensource.org/licenses/MIT).
 
 See license.md for the complete license text.
+
+CODAP v3 uses Jest for unit and integration testing. 
+
+#### Unit Tests
+
+Unit tests focus on testing individual components and functions in isolation. To run all unit tests:
+
+```
+npm test
+```
+
+To run a specific test file:
+
+```
+npm test path/to/test/file.test.tsx
+```
+
+#### Integration Tests
+
+Integration tests verify that different parts of the application work together correctly. CODAP v3 includes integration tests for:
+
+1. **Cross-Visualization Highlighting**: Tests that selecting data points in one visualization correctly highlights the same points in other visualizations. This is a key feature that allows users to see the same data from different perspectives.
+
+To run integration tests:
+
+```
+npm test src/test/integration
+```
+
+All visualization components have comprehensive unit tests that verify rendering, interaction, and performance aspects. The integration tests build on these unit tests to ensure components work together as expected.
