@@ -25146,6 +25146,1372 @@ Now let's commit all the files with a comprehensive commit message:
 
 ---
 
+_****_
+
+Command contains newline characters.
+
+---
+
+_****_
+
+Let's try again with a single-line commit message:
+
+---
+
+_****_
+
+```bash
+git commit -m "Add comprehensive visualization testing utilities for CODAP v3"
+```
+
+```
+[feature/visualization-testing 69664a66a] Add comprehensive visualization testing utilities for CODAP v3
+ 10 files changed, 2427 insertions(+)
+ create mode 100644 design/visualization-testing.md
+ create mode 100644 src/test/visualization/index.ts
+ create mode 100644 src/test/visualization/interaction-test-utils.test.tsx
+ create mode 100644 src/test/visualization/interaction-test-utils.ts
+ create mode 100644 src/test/visualization/performance-test-utils.test.tsx
+ create mode 100644 v3/src/test/visualization/interaction-test-utils.ts
+ create mode 100644 v3/src/test/visualization/performance-test-utils.ts
+ create mode 100644 v3/src/test/visualization/scatter-plot-test-example.md
+ create mode 100644 v3/src/test/visualization/snapshot-test-utils.ts
+ create mode 100644 v3/src/test/visualization/visualization-test-utils.ts
+
+```
+
+---
+
+_****_
+
+Now let's push the changes to the remote repository:
+
+---
+
+_****_
+
+```bash
+git push
+```
+
+```
+Enumerating objects: 25, done.
+Counting objects: 100% (25/25), done.
+Delta compression using up to 10 threads
+Compressing objects: 100% (18/18), done.
+Writing objects: 100% (20/20), 17.77 KiB | 8.89 MiB/s, done.
+Total 20 (delta 6), reused 0 (delta 0), pack-reused 0
+remote: Resolving deltas: 100% (6/6), completed with 5 local objects.
+To https://github.com/chaddorsey/codap-v3-experiments.git
+   2ed33554e..69664a66a  feature/visualization-testing -> feature/visualization-testing
+
+```
+
+---
+
+_****_
+
+Great! We've successfully committed and pushed all the visualization testing utilities to the remote repository. Here's a summary of what we've accomplished:
+
+1. **Created four comprehensive testing utility modules**:
+   - Basic Visualization Testing Utilities (`visualization-test-utils.ts`)
+   - Interaction Testing Utilities (`interaction-test-utils.ts`)
+   - Snapshot Testing Utilities (`snapshot-test-utils.ts`)
+   - Performance Testing Utilities (`performance-test-utils.ts`)
+
+2. **Added a design document** (`design/visualization-testing.md`) that outlines the purpose and structure of these utilities.
+
+3. **Created an example usage document** (`scatter-plot-test-example.md`) that demonstrates how to use these utilities to test a scatter plot component.
+
+4. **Committed and pushed all changes** to the `feature/visualization-testing` branch.
+
+These utilities provide a solid foundation for testing visualization components in CODAP v3. They cover all aspects of visualization testing, from basic rendering and interaction to snapshots and performance measurement.
+
+Would you like to:
+
+1. Create actual test files that use these utilities
+2. Create documentation for these utilities
+3. Create a pull request to merge these changes into the main branch
+4. Work on something else
+
+Let me know what you'd like to do next!
+
+---
+
+_**User**_
+
+Let's first resolve some linter errors. I see:
+[{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/src/test/visualization/interaction-test-utils.ts",
+	"owner": "typescript",
+	"code": "2307",
+	"severity": 8,
+	"message": "Cannot find module '@testing-library/user-event' or its corresponding type declarations.",
+	"source": "ts",
+	"startLineNumber": 7,
+	"startColumn": 23,
+	"endLineNumber": 7,
+	"endColumn": 52,
+	"modelVersionId": 4
+}]
+[{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/src/test/visualization/performance-test-utils.ts",
+	"owner": "typescript",
+	"code": "2749",
+	"severity": 8,
+	"message": "'Component' refers to a value, but is being used as a type here. Did you mean 'typeof Component'?",
+	"source": "ts",
+	"startLineNumber": 50,
+	"startColumn": 33,
+	"endLineNumber": 50,
+	"endColumn": 42,
+	"modelVersionId": 4
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/src/test/visualization/performance-test-utils.ts",
+	"owner": "typescript",
+	"code": "1005",
+	"severity": 8,
+	"message": "'>' expected.",
+	"source": "ts",
+	"startLineNumber": 50,
+	"startColumn": 43,
+	"endLineNumber": 50,
+	"endColumn": 44,
+	"modelVersionId": 4
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/src/test/visualization/performance-test-utils.ts",
+	"owner": "typescript",
+	"code": "1109",
+	"severity": 8,
+	"message": "Expression expected.",
+	"source": "ts",
+	"startLineNumber": 50,
+	"startColumn": 55,
+	"endLineNumber": 50,
+	"endColumn": 56,
+	"modelVersionId": 4
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/src/test/visualization/performance-test-utils.ts",
+	"owner": "typescript",
+	"code": "1109",
+	"severity": 8,
+	"message": "Expression expected.",
+	"source": "ts",
+	"startLineNumber": 50,
+	"startColumn": 56,
+	"endLineNumber": 50,
+	"endColumn": 57,
+	"modelVersionId": 4
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/src/test/visualization/performance-test-utils.ts",
+	"owner": "typescript",
+	"code": "2749",
+	"severity": 8,
+	"message": "'Component' refers to a value, but is being used as a type here. Did you mean 'typeof Component'?",
+	"source": "ts",
+	"startLineNumber": 58,
+	"startColumn": 33,
+	"endLineNumber": 58,
+	"endColumn": 42,
+	"modelVersionId": 4
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/src/test/visualization/performance-test-utils.ts",
+	"owner": "typescript",
+	"code": "1005",
+	"severity": 8,
+	"message": "'>' expected.",
+	"source": "ts",
+	"startLineNumber": 58,
+	"startColumn": 43,
+	"endLineNumber": 58,
+	"endColumn": 44,
+	"modelVersionId": 4
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/src/test/visualization/performance-test-utils.ts",
+	"owner": "typescript",
+	"code": "1109",
+	"severity": 8,
+	"message": "Expression expected.",
+	"source": "ts",
+	"startLineNumber": 58,
+	"startColumn": 55,
+	"endLineNumber": 58,
+	"endColumn": 56,
+	"modelVersionId": 4
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/src/test/visualization/performance-test-utils.ts",
+	"owner": "typescript",
+	"code": "1109",
+	"severity": 8,
+	"message": "Expression expected.",
+	"source": "ts",
+	"startLineNumber": 58,
+	"startColumn": 56,
+	"endLineNumber": 58,
+	"endColumn": 57,
+	"modelVersionId": 4
+}]
+[{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/src/test/visualization/visualization-test-utils.test.tsx",
+	"owner": "typescript",
+	"code": "2339",
+	"severity": 8,
+	"message": "Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement>'.",
+	"source": "ts",
+	"startLineNumber": 61,
+	"startColumn": 61,
+	"endLineNumber": 61,
+	"endColumn": 78,
+	"modelVersionId": 4
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/src/test/visualization/visualization-test-utils.test.tsx",
+	"owner": "typescript",
+	"code": "2339",
+	"severity": 8,
+	"message": "Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement | null>'.",
+	"source": "ts",
+	"startLineNumber": 65,
+	"startColumn": 26,
+	"endLineNumber": 65,
+	"endColumn": 43,
+	"modelVersionId": 4
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/src/test/visualization/visualization-test-utils.test.tsx",
+	"owner": "typescript",
+	"code": "2339",
+	"severity": 8,
+	"message": "Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement | null>'.",
+	"source": "ts",
+	"startLineNumber": 66,
+	"startColumn": 26,
+	"endLineNumber": 66,
+	"endColumn": 43,
+	"modelVersionId": 4
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/src/test/visualization/visualization-test-utils.test.tsx",
+	"owner": "typescript",
+	"code": "2339",
+	"severity": 8,
+	"message": "Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement | null>'.",
+	"source": "ts",
+	"startLineNumber": 67,
+	"startColumn": 27,
+	"endLineNumber": 67,
+	"endColumn": 44,
+	"modelVersionId": 4
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/src/test/visualization/visualization-test-utils.test.tsx",
+	"owner": "typescript",
+	"code": "2339",
+	"severity": 8,
+	"message": "Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement | null>'.",
+	"source": "ts",
+	"startLineNumber": 79,
+	"startColumn": 22,
+	"endLineNumber": 79,
+	"endColumn": 39,
+	"modelVersionId": 4
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/src/test/visualization/visualization-test-utils.test.tsx",
+	"owner": "typescript",
+	"code": "2339",
+	"severity": 8,
+	"message": "Property 'toHaveAttribute' does not exist on type 'JestMatchers<HTMLElement | null>'.",
+	"source": "ts",
+	"startLineNumber": 80,
+	"startColumn": 22,
+	"endLineNumber": 80,
+	"endColumn": 37,
+	"modelVersionId": 4
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/src/test/visualization/visualization-test-utils.test.tsx",
+	"owner": "typescript",
+	"code": "2339",
+	"severity": 8,
+	"message": "Property 'toHaveAttribute' does not exist on type 'JestMatchers<HTMLElement | null>'.",
+	"source": "ts",
+	"startLineNumber": 81,
+	"startColumn": 22,
+	"endLineNumber": 81,
+	"endColumn": 37,
+	"modelVersionId": 4
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/src/test/visualization/visualization-test-utils.test.tsx",
+	"owner": "typescript",
+	"code": "2339",
+	"severity": 8,
+	"message": "Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement | null>'.",
+	"source": "ts",
+	"startLineNumber": 84,
+	"startColumn": 22,
+	"endLineNumber": 84,
+	"endColumn": 39,
+	"modelVersionId": 4
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/src/test/visualization/visualization-test-utils.test.tsx",
+	"owner": "typescript",
+	"code": "2339",
+	"severity": 8,
+	"message": "Property 'toHaveAttribute' does not exist on type 'JestMatchers<HTMLElement | null>'.",
+	"source": "ts",
+	"startLineNumber": 85,
+	"startColumn": 22,
+	"endLineNumber": 85,
+	"endColumn": 37,
+	"modelVersionId": 4
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/src/test/visualization/visualization-test-utils.test.tsx",
+	"owner": "typescript",
+	"code": "2339",
+	"severity": 8,
+	"message": "Property 'toHaveAttribute' does not exist on type 'JestMatchers<HTMLElement | null>'.",
+	"source": "ts",
+	"startLineNumber": 86,
+	"startColumn": 22,
+	"endLineNumber": 86,
+	"endColumn": 37,
+	"modelVersionId": 4
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/src/test/visualization/visualization-test-utils.test.tsx",
+	"owner": "typescript",
+	"code": "2339",
+	"severity": 8,
+	"message": "Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement | null>'.",
+	"source": "ts",
+	"startLineNumber": 97,
+	"startColumn": 22,
+	"endLineNumber": 97,
+	"endColumn": 39,
+	"modelVersionId": 4
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/src/test/visualization/visualization-test-utils.test.tsx",
+	"owner": "typescript",
+	"code": "2339",
+	"severity": 8,
+	"message": "Property 'toHaveAttribute' does not exist on type 'JestMatchers<HTMLElement | null>'.",
+	"source": "ts",
+	"startLineNumber": 98,
+	"startColumn": 22,
+	"endLineNumber": 98,
+	"endColumn": 37,
+	"modelVersionId": 4
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/src/test/visualization/visualization-test-utils.test.tsx",
+	"owner": "typescript",
+	"code": "2339",
+	"severity": 8,
+	"message": "Property 'toHaveAttribute' does not exist on type 'JestMatchers<HTMLElement | null>'.",
+	"source": "ts",
+	"startLineNumber": 99,
+	"startColumn": 22,
+	"endLineNumber": 99,
+	"endColumn": 37,
+	"modelVersionId": 4
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/src/test/visualization/visualization-test-utils.test.tsx",
+	"owner": "typescript",
+	"code": "2339",
+	"severity": 8,
+	"message": "Property 'toBeInTheDocument' does not exist on type 'JestMatchers<HTMLElement | null>'.",
+	"source": "ts",
+	"startLineNumber": 102,
+	"startColumn": 22,
+	"endLineNumber": 102,
+	"endColumn": 39,
+	"modelVersionId": 4
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/src/test/visualization/visualization-test-utils.test.tsx",
+	"owner": "typescript",
+	"code": "2339",
+	"severity": 8,
+	"message": "Property 'toHaveAttribute' does not exist on type 'JestMatchers<HTMLElement | null>'.",
+	"source": "ts",
+	"startLineNumber": 103,
+	"startColumn": 22,
+	"endLineNumber": 103,
+	"endColumn": 37,
+	"modelVersionId": 4
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/src/test/visualization/visualization-test-utils.test.tsx",
+	"owner": "typescript",
+	"code": "2339",
+	"severity": 8,
+	"message": "Property 'toHaveAttribute' does not exist on type 'JestMatchers<HTMLElement | null>'.",
+	"source": "ts",
+	"startLineNumber": 104,
+	"startColumn": 22,
+	"endLineNumber": 104,
+	"endColumn": 37,
+	"modelVersionId": 4
+}]
+[{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/src/test/visualization/visualization-test-utils.ts",
+	"owner": "typescript",
+	"code": "2307",
+	"severity": 8,
+	"message": "Cannot find module '@testing-library/user-event' or its corresponding type declarations.",
+	"source": "ts",
+	"startLineNumber": 9,
+	"startColumn": 23,
+	"endLineNumber": 9,
+	"endColumn": 52,
+	"modelVersionId": 4
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/src/test/visualization/visualization-test-utils.ts",
+	"owner": "typescript",
+	"code": "2307",
+	"severity": 8,
+	"message": "Cannot find module '../../models/data/data-set-types' or its corresponding type declarations.",
+	"source": "ts",
+	"startLineNumber": 10,
+	"startColumn": 23,
+	"endLineNumber": 10,
+	"endColumn": 57,
+	"modelVersionId": 4
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/src/test/visualization/visualization-test-utils.ts",
+	"owner": "typescript",
+	"code": "2307",
+	"severity": 8,
+	"message": "Cannot find module '../../models/data/data-set' or its corresponding type declarations.",
+	"source": "ts",
+	"startLineNumber": 11,
+	"startColumn": 25,
+	"endLineNumber": 11,
+	"endColumn": 53,
+	"modelVersionId": 4
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/src/test/visualization/visualization-test-utils.ts",
+	"owner": "typescript",
+	"code": "2307",
+	"severity": 8,
+	"message": "Cannot find module '../data/testDataUtils' or its corresponding type declarations.",
+	"source": "ts",
+	"startLineNumber": 12,
+	"startColumn": 30,
+	"endLineNumber": 12,
+	"endColumn": 53,
+	"modelVersionId": 4
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/src/test/visualization/visualization-test-utils.ts",
+	"owner": "typescript",
+	"code": "2749",
+	"severity": 8,
+	"message": "'Component' refers to a value, but is being used as a type here. Did you mean 'typeof Component'?",
+	"source": "ts",
+	"startLineNumber": 66,
+	"startColumn": 26,
+	"endLineNumber": 66,
+	"endColumn": 35,
+	"modelVersionId": 4
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/src/test/visualization/visualization-test-utils.ts",
+	"owner": "typescript",
+	"code": "1005",
+	"severity": 8,
+	"message": "'>' expected.",
+	"source": "ts",
+	"startLineNumber": 66,
+	"startColumn": 36,
+	"endLineNumber": 66,
+	"endColumn": 37,
+	"modelVersionId": 4
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/src/test/visualization/visualization-test-utils.ts",
+	"owner": "typescript",
+	"code": "1109",
+	"severity": 8,
+	"message": "Expression expected.",
+	"source": "ts",
+	"startLineNumber": 66,
+	"startColumn": 48,
+	"endLineNumber": 66,
+	"endColumn": 49,
+	"modelVersionId": 4
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/src/test/visualization/visualization-test-utils.ts",
+	"owner": "typescript",
+	"code": "1109",
+	"severity": 8,
+	"message": "Expression expected.",
+	"source": "ts",
+	"startLineNumber": 66,
+	"startColumn": 49,
+	"endLineNumber": 66,
+	"endColumn": 50,
+	"modelVersionId": 4
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/src/test/visualization/visualization-test-utils.ts",
+	"owner": "typescript",
+	"code": "2503",
+	"severity": 8,
+	"message": "Cannot find namespace 'JSX'.",
+	"source": "ts",
+	"startLineNumber": 190,
+	"startColumn": 4,
+	"endLineNumber": 190,
+	"endColumn": 7,
+	"modelVersionId": 4
+}]
+[{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/data/testDataUtils.ts",
+	"owner": "typescript",
+	"code": "2353",
+	"severity": 8,
+	"message": "Object literal may only specify known properties, and 'type' does not exist in type 'ModelCreationType<ExtractCFromProps<{ id: IOptionalIType<ISimpleType<string>, [undefined]>; name: IType<string | undefined, string, string>; _title: IMaybe<ISimpleType<string>>; } & { ...; }>>'.",
+	"source": "ts",
+	"startLineNumber": 35,
+	"startColumn": 5,
+	"endLineNumber": 35,
+	"endColumn": 9,
+	"modelVersionId": 25
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/data/testDataUtils.ts",
+	"owner": "typescript",
+	"code": "2551",
+	"severity": 8,
+	"message": "Property 'unit' does not exist on type 'Partial<ModelCreationType<ExtractCFromProps<{ id: IOptionalIType<ISimpleType<string>, [undefined]>; name: IType<string | undefined, string, string>; _title: IMaybe<ISimpleType<string>>; } & { ...; }>>>'. Did you mean 'units'?",
+	"source": "ts",
+	"startLineNumber": 39,
+	"startColumn": 19,
+	"endLineNumber": 39,
+	"endColumn": 23,
+	"modelVersionId": 25
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/data/testDataUtils.ts",
+	"owner": "typescript",
+	"code": "2339",
+	"severity": 8,
+	"message": "Property 'hidden' does not exist on type 'Partial<ModelCreationType<ExtractCFromProps<{ id: IOptionalIType<ISimpleType<string>, [undefined]>; name: IType<string | undefined, string, string>; _title: IMaybe<ISimpleType<string>>; } & { ...; }>>>'.",
+	"source": "ts",
+	"startLineNumber": 41,
+	"startColumn": 21,
+	"endLineNumber": 41,
+	"endColumn": 27,
+	"modelVersionId": 25
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/data/testDataUtils.ts",
+	"owner": "typescript",
+	"code": "2551",
+	"severity": 8,
+	"message": "Property 'title' does not exist on type 'Partial<ModelCreationType<ExtractCFromProps<{ id: IOptionalIType<ISimpleType<string>, [undefined]>; name: IType<string | undefined, string, string>; _title: IMaybe<ISimpleType<string>>; } & { ...; }>>>'. Did you mean '_title'?",
+	"source": "ts",
+	"startLineNumber": 61,
+	"startColumn": 20,
+	"endLineNumber": 61,
+	"endColumn": 25,
+	"modelVersionId": 25
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/data/testDataUtils.ts",
+	"owner": "typescript",
+	"code": "2339",
+	"severity": 8,
+	"message": "Property 'description' does not exist on type 'Partial<ModelCreationType<ExtractCFromProps<{ id: IOptionalIType<ISimpleType<string>, [undefined]>; name: IType<string | undefined, string, string>; _title: IMaybe<ISimpleType<string>>; } & { ...; }>>>'.",
+	"source": "ts",
+	"startLineNumber": 62,
+	"startColumn": 26,
+	"endLineNumber": 62,
+	"endColumn": 37,
+	"modelVersionId": 25
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/data/testDataUtils.ts",
+	"owner": "typescript",
+	"code": "2339",
+	"severity": 8,
+	"message": "Property 'parent' does not exist on type 'Partial<ModelCreationType<ExtractCFromProps<{ id: IOptionalIType<ISimpleType<string>, [undefined]>; name: IType<string | undefined, string, string>; _title: IMaybe<ISimpleType<string>>; } & { ...; }>>>'.",
+	"source": "ts",
+	"startLineNumber": 63,
+	"startColumn": 21,
+	"endLineNumber": 63,
+	"endColumn": 27,
+	"modelVersionId": 25
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/data/testDataUtils.ts",
+	"owner": "typescript",
+	"code": "2740",
+	"severity": 8,
+	"message": "Type 'Record<string, ITestAttribute>' is missing the following properties from type 'readonly (ReferenceIdentifier | undefined)[]': length, concat, join, slice, and 20 more.",
+	"source": "ts",
+	"startLineNumber": 64,
+	"startColumn": 5,
+	"endLineNumber": 64,
+	"endColumn": 15,
+	"modelVersionId": 25
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/data/testDataUtils.ts",
+	"owner": "typescript",
+	"code": "2345",
+	"severity": 8,
+	"message": "Argument of type 'any' is not assignable to parameter of type 'never'.",
+	"source": "ts",
+	"startLineNumber": 236,
+	"startColumn": 28,
+	"endLineNumber": 236,
+	"endColumn": 76,
+	"modelVersionId": 25
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/data/testDataUtils.ts",
+	"owner": "typescript",
+	"code": "2561",
+	"severity": 8,
+	"message": "Object literal may only specify known properties, but 'title' does not exist in type 'ModelCreationType<ExtractCFromProps<{ id: IOptionalIType<ISimpleType<string>, [undefined]>; name: IType<string | undefined, string, string>; _title: IMaybe<ISimpleType<string>>; } & { ...; }>>'. Did you mean to write '_title'?",
+	"source": "ts",
+	"startLineNumber": 292,
+	"startColumn": 5,
+	"endLineNumber": 292,
+	"endColumn": 10,
+	"modelVersionId": 25
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/data/testDataUtils.ts",
+	"owner": "typescript",
+	"code": "2551",
+	"severity": 8,
+	"message": "Property 'title' does not exist on type 'Partial<ModelCreationType<ExtractCFromProps<{ id: IOptionalIType<ISimpleType<string>, [undefined]>; name: IType<string | undefined, string, string>; _title: IMaybe<ISimpleType<string>>; } & { ...; }>>>'. Did you mean '_title'?",
+	"source": "ts",
+	"startLineNumber": 292,
+	"startColumn": 20,
+	"endLineNumber": 292,
+	"endColumn": 25,
+	"modelVersionId": 25
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/data/testDataUtils.ts",
+	"owner": "typescript",
+	"code": "2345",
+	"severity": 8,
+	"message": "Argument of type 'ITestCollection' is not assignable to parameter of type 'ICollectionModelSnapshot'.\n  Type 'ModelInstanceTypeProps<{ id: IOptionalIType<ISimpleType<string>, [undefined]>; name: IType<string | undefined, string, string>; _title: IMaybe<ISimpleType<string>>; } & { ...; }> & ... 19 more ... & IStateTreeNode<...>' is not assignable to type 'Partial<ExtractCFromProps<{ id: IOptionalIType<ISimpleType<string>, [undefined]>; name: IType<string | undefined, string, string>; _title: IMaybe<ISimpleType<string>>; } & { ...; }>>'.\n    Types of property 'attributes' are incompatible.\n      Type 'IMSTArray<IMaybe<IReferenceType<IModelType<{ id: IOptionalIType<ISimpleType<string>, [undefined]>; name: IType<string | undefined, string, string>; _title: IMaybe<ISimpleType<string>>; } & { ...; }, { ...; } & ... 9 more ... & { ...; }, ModelCreationType<...>, _NotCustomized>>>> & IStateTreeNode<...>' is not assignable to type 'readonly (ReferenceIdentifier | undefined)[] | undefined'.\n        Type 'IMSTArray<IMaybe<IReferenceType<IModelType<{ id: IOptionalIType<ISimpleType<string>, [undefined]>; name: IType<string | undefined, string, string>; _title: IMaybe<ISimpleType<string>>; } & { ...; }, { ...; } & ... 9 more ... & { ...; }, ModelCreationType<...>, _NotCustomized>>>> & IStateTreeNode<...>' is not assignable to type 'readonly (ReferenceIdentifier | undefined)[]'.\n          Types of property 'concat' are incompatible.\n            Type '{ (...items: ConcatArray<(ModelInstanceTypeProps<{ id: IOptionalIType<ISimpleType<string>, [undefined]>; name: IType<string | undefined, string, string>; _title: IMaybe<ISimpleType<string>>; } & { ...; }> & ... 11 more ... & IStateTreeNode<...>) | undefined>[]): ((ModelInstanceTypeProps<...> & ... 11 more ... & ISta...' is not assignable to type '{ (...items: ConcatArray<ReferenceIdentifier | undefined>[]): (ReferenceIdentifier | undefined)[]; (...items: (ReferenceIdentifier | ConcatArray<...> | undefined)[]): (ReferenceIdentifier | undefined)[]; }'.\n              Types of parameters 'items' and 'items' are incompatible.\n                Type 'ConcatArray<ReferenceIdentifier | undefined>' is not assignable to type 'ConcatArray<(ModelInstanceTypeProps<{ id: IOptionalIType<ISimpleType<string>, [undefined]>; name: IType<string | undefined, string, string>; _title: IMaybe<ISimpleType<string>>; } & { ...; }> & ... 11 more ... & IStateTreeNode<...>) | undefined>'.\n                  Type 'ReferenceIdentifier | undefined' is not assignable to type '(ModelInstanceTypeProps<{ id: IOptionalIType<ISimpleType<string>, [undefined]>; name: IType<string | undefined, string, string>; _title: IMaybe<ISimpleType<string>>; } & { ...; }> & ... 11 more ... & IStateTreeNode<...>) | undefined'.\n                    Type 'string' is not assignable to type 'ModelInstanceTypeProps<{ id: IOptionalIType<ISimpleType<string>, [undefined]>; name: IType<string | undefined, string, string>; _title: IMaybe<ISimpleType<string>>; } & { ...; }> & ... 11 more ... & IStateTreeNode<...>'.\n                      Type 'string' is not assignable to type 'ModelInstanceTypeProps<{ id: IOptionalIType<ISimpleType<string>, [undefined]>; name: IType<string | undefined, string, string>; _title: IMaybe<ISimpleType<string>>; } & { ...; }>'.",
+	"source": "ts",
+	"startLineNumber": 299,
+	"startColumn": 27,
+	"endLineNumber": 299,
+	"endColumn": 37,
+	"modelVersionId": 25
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/data/testDataUtils.ts",
+	"owner": "typescript",
+	"code": "2339",
+	"severity": 8,
+	"message": "Property 'addCasesWithIDs' does not exist on type 'ModelInstanceTypeProps<{ id: IOptionalIType<ISimpleType<string>, [undefined]>; name: IType<string | undefined, string, string>; _title: IMaybe<ISimpleType<string>>; } & { ...; }> & ... 29 more ... & IStateTreeNode<...>'.",
+	"source": "ts",
+	"startLineNumber": 305,
+	"startColumn": 24,
+	"endLineNumber": 305,
+	"endColumn": 39,
+	"modelVersionId": 25
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/data/testDataUtils.ts",
+	"owner": "typescript",
+	"code": "2339",
+	"severity": 8,
+	"message": "Property 'addCasesWithIDs' does not exist on type 'ModelInstanceTypeProps<{ id: IOptionalIType<ISimpleType<string>, [undefined]>; name: IType<string | undefined, string, string>; _title: IMaybe<ISimpleType<string>>; } & { ...; }> & ... 29 more ... & IStateTreeNode<...>'.",
+	"source": "ts",
+	"startLineNumber": 306,
+	"startColumn": 15,
+	"endLineNumber": 306,
+	"endColumn": 30,
+	"modelVersionId": 25
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/data/testDataUtils.ts",
+	"owner": "typescript",
+	"code": "2561",
+	"severity": 8,
+	"message": "Object literal may only specify known properties, but 'unit' does not exist in type 'Partial<ModelCreationType<ExtractCFromProps<{ id: IOptionalIType<ISimpleType<string>, [undefined]>; name: IType<string | undefined, string, string>; _title: IMaybe<ISimpleType<string>>; } & { ...; }>>>'. Did you mean to write 'units'?",
+	"source": "ts",
+	"startLineNumber": 352,
+	"startColumn": 62,
+	"endLineNumber": 352,
+	"endColumn": 66,
+	"modelVersionId": 25
+}]
+[{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/helpers/renderHelpers.ts",
+	"owner": "typescript",
+	"code": "2307",
+	"severity": 8,
+	"message": "Cannot find module 'react-router-dom' or its corresponding type declarations.",
+	"source": "ts",
+	"startLineNumber": 11,
+	"startColumn": 30,
+	"endLineNumber": 11,
+	"endColumn": 48,
+	"modelVersionId": 23
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/helpers/renderHelpers.ts",
+	"owner": "typescript",
+	"code": "2355",
+	"severity": 8,
+	"message": "A function whose declared type is neither 'undefined', 'void', nor 'any' must return a value.",
+	"source": "ts",
+	"startLineNumber": 56,
+	"startColumn": 4,
+	"endLineNumber": 56,
+	"endColumn": 29,
+	"modelVersionId": 23
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/helpers/renderHelpers.ts",
+	"owner": "typescript",
+	"code": "2322",
+	"severity": 8,
+	"message": "Type '({ children }: { children: ReactNode; }) => void' is not assignable to type 'FC<{ children: ReactNode; }>'.\n  Type 'void' is not assignable to type 'ReactNode'.",
+	"source": "ts",
+	"startLineNumber": 74,
+	"startColumn": 9,
+	"endLineNumber": 74,
+	"endColumn": 16,
+	"modelVersionId": 23
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/helpers/renderHelpers.ts",
+	"owner": "typescript",
+	"code": "2749",
+	"severity": 8,
+	"message": "'ChakraProvider' refers to a value, but is being used as a type here. Did you mean 'typeof ChakraProvider'?",
+	"source": "ts",
+	"startLineNumber": 80,
+	"startColumn": 10,
+	"endLineNumber": 80,
+	"endColumn": 24,
+	"modelVersionId": 23
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/helpers/renderHelpers.ts",
+	"owner": "typescript",
+	"code": "1161",
+	"severity": 8,
+	"message": "Unterminated regular expression literal.",
+	"source": "ts",
+	"startLineNumber": 82,
+	"startColumn": 10,
+	"endLineNumber": 82,
+	"endColumn": 26,
+	"modelVersionId": 23
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/helpers/renderHelpers.ts",
+	"owner": "typescript",
+	"code": "1005",
+	"severity": 8,
+	"message": "'>' expected.",
+	"source": "ts",
+	"startLineNumber": 89,
+	"startColumn": 23,
+	"endLineNumber": 89,
+	"endColumn": 37,
+	"modelVersionId": 23
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/helpers/renderHelpers.ts",
+	"owner": "typescript",
+	"code": "2304",
+	"severity": 8,
+	"message": "Cannot find name 'initialEntries'.",
+	"source": "ts",
+	"startLineNumber": 89,
+	"startColumn": 23,
+	"endLineNumber": 89,
+	"endColumn": 37,
+	"modelVersionId": 23
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/helpers/renderHelpers.ts",
+	"owner": "typescript",
+	"code": "1005",
+	"severity": 8,
+	"message": "')' expected.",
+	"source": "ts",
+	"startLineNumber": 89,
+	"startColumn": 37,
+	"endLineNumber": 89,
+	"endColumn": 38,
+	"modelVersionId": 23
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/helpers/renderHelpers.ts",
+	"owner": "typescript",
+	"code": "2365",
+	"severity": 8,
+	"message": "Operator '>' cannot be applied to types '{ [x: string]: any; }' and '{ wrappedChildren: React.ReactNode; }'.",
+	"source": "ts",
+	"startLineNumber": 89,
+	"startColumn": 38,
+	"endLineNumber": 90,
+	"endColumn": 28,
+	"modelVersionId": 23
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/helpers/renderHelpers.ts",
+	"owner": "typescript",
+	"code": "2365",
+	"severity": 8,
+	"message": "Operator '<' cannot be applied to types 'boolean' and 'RegExp'.",
+	"source": "ts",
+	"startLineNumber": 89,
+	"startColumn": 38,
+	"endLineNumber": 91,
+	"endColumn": 24,
+	"modelVersionId": 23
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/helpers/renderHelpers.ts",
+	"owner": "typescript",
+	"code": "1005",
+	"severity": 8,
+	"message": "':' expected.",
+	"source": "ts",
+	"startLineNumber": 89,
+	"startColumn": 53,
+	"endLineNumber": 89,
+	"endColumn": 54,
+	"modelVersionId": 23
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/helpers/renderHelpers.ts",
+	"owner": "typescript",
+	"code": "1161",
+	"severity": 8,
+	"message": "Unterminated regular expression literal.",
+	"source": "ts",
+	"startLineNumber": 91,
+	"startColumn": 10,
+	"endLineNumber": 91,
+	"endColumn": 24,
+	"modelVersionId": 23
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/helpers/renderHelpers.ts",
+	"owner": "typescript",
+	"code": "1128",
+	"severity": 8,
+	"message": "Declaration or statement expected.",
+	"source": "ts",
+	"startLineNumber": 92,
+	"startColumn": 7,
+	"endLineNumber": 92,
+	"endColumn": 8,
+	"modelVersionId": 23
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/helpers/renderHelpers.ts",
+	"owner": "typescript",
+	"code": "1110",
+	"severity": 8,
+	"message": "Type expected.",
+	"source": "ts",
+	"startLineNumber": 95,
+	"startColumn": 13,
+	"endLineNumber": 95,
+	"endColumn": 14,
+	"modelVersionId": 23
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/helpers/renderHelpers.ts",
+	"owner": "typescript",
+	"code": "1161",
+	"severity": 8,
+	"message": "Unterminated regular expression literal.",
+	"source": "ts",
+	"startLineNumber": 95,
+	"startColumn": 32,
+	"endLineNumber": 95,
+	"endColumn": 34,
+	"modelVersionId": 23
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/helpers/renderHelpers.ts",
+	"owner": "typescript",
+	"code": "1128",
+	"severity": 8,
+	"message": "Declaration or statement expected.",
+	"source": "ts",
+	"startLineNumber": 96,
+	"startColumn": 3,
+	"endLineNumber": 96,
+	"endColumn": 4,
+	"modelVersionId": 23
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/helpers/renderHelpers.ts",
+	"owner": "typescript",
+	"code": "2304",
+	"severity": 8,
+	"message": "Cannot find name 'ui'.",
+	"source": "ts",
+	"startLineNumber": 99,
+	"startColumn": 25,
+	"endLineNumber": 99,
+	"endColumn": 27,
+	"modelVersionId": 23
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/helpers/renderHelpers.ts",
+	"owner": "typescript",
+	"code": "2304",
+	"severity": 8,
+	"message": "Cannot find name 'Wrapper'.",
+	"source": "ts",
+	"startLineNumber": 99,
+	"startColumn": 40,
+	"endLineNumber": 99,
+	"endColumn": 47,
+	"modelVersionId": 23
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/helpers/renderHelpers.ts",
+	"owner": "typescript",
+	"code": "2304",
+	"severity": 8,
+	"message": "Cannot find name 'renderOptions'.",
+	"source": "ts",
+	"startLineNumber": 99,
+	"startColumn": 52,
+	"endLineNumber": 99,
+	"endColumn": 65,
+	"modelVersionId": 23
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/helpers/renderHelpers.ts",
+	"owner": "typescript",
+	"code": "1128",
+	"severity": 8,
+	"message": "Declaration or statement expected.",
+	"source": "ts",
+	"startLineNumber": 105,
+	"startColumn": 1,
+	"endLineNumber": 105,
+	"endColumn": 2,
+	"modelVersionId": 23
+}]
+[{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/visualization/scatter-plot.test.tsx",
+	"owner": "typescript",
+	"code": "2352",
+	"severity": 8,
+	"message": "Conversion of type 'PixiPoints | undefined' to type 'MockPixiPoints' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.\n  Property 'data' is missing in type 'PixiPoints' but required in type 'MockPixiPoints'.",
+	"source": "ts",
+	"startLineNumber": 58,
+	"startColumn": 19,
+	"endLineNumber": 58,
+	"endColumn": 47,
+	"relatedInformation": [
+		{
+			"startLineNumber": 47,
+			"startColumn": 3,
+			"endLineNumber": 47,
+			"endColumn": 7,
+			"message": "'data' is declared here.",
+			"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/visualization/scatter-plot.test.tsx"
+		}
+	],
+	"modelVersionId": 20
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/visualization/scatter-plot.test.tsx",
+	"owner": "typescript",
+	"code": "2740",
+	"severity": 8,
+	"message": "Type 'MockPixiPoints' is missing the following properties from type 'PixiPoints': ticker, tickerStopTimeoutId, isSafari, mostRecentSvgElement, and 55 more.",
+	"source": "ts",
+	"startLineNumber": 166,
+	"startColumn": 11,
+	"endLineNumber": 166,
+	"endColumn": 21,
+	"relatedInformation": [
+		{
+			"startLineNumber": 4,
+			"startColumn": 3,
+			"endLineNumber": 4,
+			"endColumn": 13,
+			"message": "The expected type comes from property 'pixiPoints' which is declared here on type 'IPlotProps'",
+			"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/components/graph/graphing-types.ts"
+		}
+	],
+	"modelVersionId": 20
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/visualization/scatter-plot.test.tsx",
+	"owner": "typescript",
+	"code": "2740",
+	"severity": 8,
+	"message": "Type 'MockPixiPoints' is missing the following properties from type 'PixiPoints': ticker, tickerStopTimeoutId, isSafari, mostRecentSvgElement, and 55 more.",
+	"source": "ts",
+	"startLineNumber": 176,
+	"startColumn": 49,
+	"endLineNumber": 176,
+	"endColumn": 59,
+	"relatedInformation": [
+		{
+			"startLineNumber": 4,
+			"startColumn": 3,
+			"endLineNumber": 4,
+			"endColumn": 13,
+			"message": "The expected type comes from property 'pixiPoints' which is declared here on type 'IntrinsicAttributes & IPlotProps'",
+			"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/components/graph/graphing-types.ts"
+		}
+	],
+	"modelVersionId": 20
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/visualization/scatter-plot.test.tsx",
+	"owner": "typescript",
+	"code": "2740",
+	"severity": 8,
+	"message": "Type 'MockPixiPoints' is missing the following properties from type 'PixiPoints': ticker, tickerStopTimeoutId, isSafari, mostRecentSvgElement, and 55 more.",
+	"source": "ts",
+	"startLineNumber": 188,
+	"startColumn": 11,
+	"endLineNumber": 188,
+	"endColumn": 21,
+	"relatedInformation": [
+		{
+			"startLineNumber": 4,
+			"startColumn": 3,
+			"endLineNumber": 4,
+			"endColumn": 13,
+			"message": "The expected type comes from property 'pixiPoints' which is declared here on type 'IPlotProps'",
+			"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/components/graph/graphing-types.ts"
+		}
+	],
+	"modelVersionId": 20
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/visualization/scatter-plot.test.tsx",
+	"owner": "typescript",
+	"code": "2740",
+	"severity": 8,
+	"message": "Type 'MockPixiPoints' is missing the following properties from type 'PixiPoints': ticker, tickerStopTimeoutId, isSafari, mostRecentSvgElement, and 55 more.",
+	"source": "ts",
+	"startLineNumber": 205,
+	"startColumn": 11,
+	"endLineNumber": 205,
+	"endColumn": 21,
+	"relatedInformation": [
+		{
+			"startLineNumber": 4,
+			"startColumn": 3,
+			"endLineNumber": 4,
+			"endColumn": 13,
+			"message": "The expected type comes from property 'pixiPoints' which is declared here on type 'IPlotProps'",
+			"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/components/graph/graphing-types.ts"
+		}
+	],
+	"modelVersionId": 20
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/visualization/scatter-plot.test.tsx",
+	"owner": "typescript",
+	"code": "2740",
+	"severity": 8,
+	"message": "Type 'MockPixiPoints' is missing the following properties from type 'PixiPoints': ticker, tickerStopTimeoutId, isSafari, mostRecentSvgElement, and 55 more.",
+	"source": "ts",
+	"startLineNumber": 217,
+	"startColumn": 11,
+	"endLineNumber": 217,
+	"endColumn": 21,
+	"relatedInformation": [
+		{
+			"startLineNumber": 4,
+			"startColumn": 3,
+			"endLineNumber": 4,
+			"endColumn": 13,
+			"message": "The expected type comes from property 'pixiPoints' which is declared here on type 'IPlotProps'",
+			"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/components/graph/graphing-types.ts"
+		}
+	],
+	"modelVersionId": 20
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/visualization/scatter-plot.test.tsx",
+	"owner": "typescript",
+	"code": "2740",
+	"severity": 8,
+	"message": "Type 'MockPixiPoints' is missing the following properties from type 'PixiPoints': ticker, tickerStopTimeoutId, isSafari, mostRecentSvgElement, and 55 more.",
+	"source": "ts",
+	"startLineNumber": 234,
+	"startColumn": 11,
+	"endLineNumber": 234,
+	"endColumn": 21,
+	"relatedInformation": [
+		{
+			"startLineNumber": 4,
+			"startColumn": 3,
+			"endLineNumber": 4,
+			"endColumn": 13,
+			"message": "The expected type comes from property 'pixiPoints' which is declared here on type 'IPlotProps'",
+			"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/components/graph/graphing-types.ts"
+		}
+	],
+	"modelVersionId": 20
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/visualization/scatter-plot.test.tsx",
+	"owner": "typescript",
+	"code": "2740",
+	"severity": 8,
+	"message": "Type 'MockPixiPoints' is missing the following properties from type 'PixiPoints': ticker, tickerStopTimeoutId, isSafari, mostRecentSvgElement, and 55 more.",
+	"source": "ts",
+	"startLineNumber": 249,
+	"startColumn": 49,
+	"endLineNumber": 249,
+	"endColumn": 59,
+	"relatedInformation": [
+		{
+			"startLineNumber": 4,
+			"startColumn": 3,
+			"endLineNumber": 4,
+			"endColumn": 13,
+			"message": "The expected type comes from property 'pixiPoints' which is declared here on type 'IntrinsicAttributes & IPlotProps'",
+			"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/components/graph/graphing-types.ts"
+		}
+	],
+	"modelVersionId": 20
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/visualization/scatter-plot.test.tsx",
+	"owner": "typescript",
+	"code": "2740",
+	"severity": 8,
+	"message": "Type 'MockPixiPoints' is missing the following properties from type 'PixiPoints': ticker, tickerStopTimeoutId, isSafari, mostRecentSvgElement, and 55 more.",
+	"source": "ts",
+	"startLineNumber": 259,
+	"startColumn": 49,
+	"endLineNumber": 259,
+	"endColumn": 59,
+	"relatedInformation": [
+		{
+			"startLineNumber": 4,
+			"startColumn": 3,
+			"endLineNumber": 4,
+			"endColumn": 13,
+			"message": "The expected type comes from property 'pixiPoints' which is declared here on type 'IntrinsicAttributes & IPlotProps'",
+			"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/components/graph/graphing-types.ts"
+		}
+	],
+	"modelVersionId": 20
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/visualization/scatter-plot.test.tsx",
+	"owner": "typescript",
+	"code": "2740",
+	"severity": 8,
+	"message": "Type 'MockPixiPoints' is missing the following properties from type 'PixiPoints': ticker, tickerStopTimeoutId, isSafari, mostRecentSvgElement, and 55 more.",
+	"source": "ts",
+	"startLineNumber": 269,
+	"startColumn": 49,
+	"endLineNumber": 269,
+	"endColumn": 59,
+	"relatedInformation": [
+		{
+			"startLineNumber": 4,
+			"startColumn": 3,
+			"endLineNumber": 4,
+			"endColumn": 13,
+			"message": "The expected type comes from property 'pixiPoints' which is declared here on type 'IntrinsicAttributes & IPlotProps'",
+			"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/components/graph/graphing-types.ts"
+		}
+	],
+	"modelVersionId": 20
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/visualization/scatter-plot.test.tsx",
+	"owner": "typescript",
+	"code": "2740",
+	"severity": 8,
+	"message": "Type 'MockPixiPoints' is missing the following properties from type 'PixiPoints': ticker, tickerStopTimeoutId, isSafari, mostRecentSvgElement, and 55 more.",
+	"source": "ts",
+	"startLineNumber": 284,
+	"startColumn": 49,
+	"endLineNumber": 284,
+	"endColumn": 59,
+	"relatedInformation": [
+		{
+			"startLineNumber": 4,
+			"startColumn": 3,
+			"endLineNumber": 4,
+			"endColumn": 13,
+			"message": "The expected type comes from property 'pixiPoints' which is declared here on type 'IntrinsicAttributes & IPlotProps'",
+			"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/components/graph/graphing-types.ts"
+		}
+	],
+	"modelVersionId": 20
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/visualization/scatter-plot.test.tsx",
+	"owner": "typescript",
+	"code": "2740",
+	"severity": 8,
+	"message": "Type 'MockPixiPoints' is missing the following properties from type 'PixiPoints': ticker, tickerStopTimeoutId, isSafari, mostRecentSvgElement, and 55 more.",
+	"source": "ts",
+	"startLineNumber": 317,
+	"startColumn": 11,
+	"endLineNumber": 317,
+	"endColumn": 21,
+	"relatedInformation": [
+		{
+			"startLineNumber": 4,
+			"startColumn": 3,
+			"endLineNumber": 4,
+			"endColumn": 13,
+			"message": "The expected type comes from property 'pixiPoints' which is declared here on type 'IPlotProps'",
+			"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/components/graph/graphing-types.ts"
+		}
+	],
+	"modelVersionId": 20
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/visualization/scatter-plot.test.tsx",
+	"owner": "typescript",
+	"code": "2740",
+	"severity": 8,
+	"message": "Type 'MockPixiPoints' is missing the following properties from type 'PixiPoints': ticker, tickerStopTimeoutId, isSafari, mostRecentSvgElement, and 55 more.",
+	"source": "ts",
+	"startLineNumber": 333,
+	"startColumn": 49,
+	"endLineNumber": 333,
+	"endColumn": 59,
+	"relatedInformation": [
+		{
+			"startLineNumber": 4,
+			"startColumn": 3,
+			"endLineNumber": 4,
+			"endColumn": 13,
+			"message": "The expected type comes from property 'pixiPoints' which is declared here on type 'IntrinsicAttributes & IPlotProps'",
+			"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/components/graph/graphing-types.ts"
+		}
+	],
+	"modelVersionId": 20
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/test/visualization/scatter-plot.test.tsx",
+	"owner": "typescript",
+	"code": "2740",
+	"severity": 8,
+	"message": "Type 'MockPixiPoints' is missing the following properties from type 'PixiPoints': ticker, tickerStopTimeoutId, isSafari, mostRecentSvgElement, and 55 more.",
+	"source": "ts",
+	"startLineNumber": 359,
+	"startColumn": 49,
+	"endLineNumber": 359,
+	"endColumn": 59,
+	"relatedInformation": [
+		{
+			"startLineNumber": 4,
+			"startColumn": 3,
+			"endLineNumber": 4,
+			"endColumn": 13,
+			"message": "The expected type comes from property 'pixiPoints' which is declared here on type 'IntrinsicAttributes & IPlotProps'",
+			"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/v3/src/components/graph/graphing-types.ts"
+		}
+	],
+	"modelVersionId": 20
+}]
+[{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/.github/workflows/v3.yml",
+	"owner": "_generated_diagnostic_collection_name_#1",
+	"severity": 4,
+	"message": "Context access might be invalid: GOOGLE_DRIVE_CLIENT_ID",
+	"startLineNumber": 70,
+	"startColumn": 35,
+	"endLineNumber": 70,
+	"endColumn": 72
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/.github/workflows/v3.yml",
+	"owner": "_generated_diagnostic_collection_name_#1",
+	"severity": 4,
+	"message": "Context access might be invalid: GOOGLE_DRIVE_API_KEY",
+	"startLineNumber": 71,
+	"startColumn": 33,
+	"endLineNumber": 71,
+	"endColumn": 68
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/.github/workflows/v3.yml",
+	"owner": "_generated_diagnostic_collection_name_#1",
+	"severity": 4,
+	"message": "Context access might be invalid: GOOGLE_DRIVE_APP_ID",
+	"startLineNumber": 72,
+	"startColumn": 32,
+	"endLineNumber": 72,
+	"endColumn": 66
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/.github/workflows/v3.yml",
+	"owner": "_generated_diagnostic_collection_name_#1",
+	"severity": 4,
+	"message": "Context access might be invalid: CODECOV_TOKEN",
+	"startLineNumber": 121,
+	"startColumn": 18,
+	"endLineNumber": 121,
+	"endColumn": 46
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/.github/workflows/v3.yml",
+	"owner": "_generated_diagnostic_collection_name_#1",
+	"severity": 4,
+	"message": "Context access might be invalid: CYPRESS_RECORD_KEY",
+	"startLineNumber": 154,
+	"startColumn": 19,
+	"endLineNumber": 154,
+	"endColumn": 54
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/.github/workflows/v3.yml",
+	"owner": "_generated_diagnostic_collection_name_#1",
+	"severity": 4,
+	"message": "Context access might be invalid: CYPRESS_RECORD_KEY",
+	"startLineNumber": 162,
+	"startColumn": 31,
+	"endLineNumber": 162,
+	"endColumn": 64
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/.github/workflows/v3.yml",
+	"owner": "_generated_diagnostic_collection_name_#1",
+	"severity": 4,
+	"message": "Context access might be invalid: CODECOV_TOKEN",
+	"startLineNumber": 186,
+	"startColumn": 18,
+	"endLineNumber": 186,
+	"endColumn": 46
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/.github/workflows/v3.yml",
+	"owner": "_generated_diagnostic_collection_name_#1",
+	"severity": 4,
+	"message": "Context access might be invalid: V3_AWS_ACCESS_KEY_ID",
+	"startLineNumber": 211,
+	"startColumn": 27,
+	"endLineNumber": 211,
+	"endColumn": 62
+},{
+	"resource": "/Users/chaddorsey/Dropbox/dev/ChatGPT-experiments/codap-v3-experiments/.github/workflows/v3.yml",
+	"owner": "_generated_diagnostic_collection_name_#1",
+	"severity": 4,
+	"message": "Context access might be invalid: V3_AWS_SECRET_ACCESS_KEY",
+	"startLineNumber": 212,
+	"startColumn": 31,
+	"endLineNumber": 212,
+	"endColumn": 70
+}]
+
+
+---
+
+_**Assistant**_
+
+I see there are several linter errors we need to fix. Let's focus on the errors in our visualization testing utilities. The main issues appear to be:
+
+1. Missing dependencies like `@testing-library/user-event`
+2. Type errors in our React component handling
+3. Import errors for modules that don't exist in the project
+
+Let's start by installing the missing dependencies:
+
+---
+
+_****_
+
+```bash
+cd v3 && npm install --save-dev @testing-library/user-event
+```
+
+```
+
+changed 1 package, and audited 1970 packages in 3s
+
+289 packages are looking for funding
+  run `npm fund` for details
+
+3 vulnerabilities (2 moderate, 1 high)
+
+To address all issues, run:
+  npm audit fix
+
+Run `npm audit` for details.
+
+```
+
+---
+
+_****_
+
+Now let's fix the linter errors in our visualization testing utilities. Let's start with the visualization-test-utils.ts file:
+
+---
+
+_****_
+
+
+
+---
+
+_****_
+
+
+
+---
+
 
 
 ---
