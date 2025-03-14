@@ -47,7 +47,7 @@ export async function measureRenderingPerformance<P>(
   
   // Warm-up phase
   for (let i = 0; i < warmupIterations; i++) {
-    const { unmount } = render(<Component {...props} />);
+    const { unmount } = render(React.createElement(Component, props));
     unmount();
   }
   
@@ -55,7 +55,7 @@ export async function measureRenderingPerformance<P>(
   for (let i = 0; i < iterations; i++) {
     const start = performance.now();
     
-    const { unmount } = render(<Component {...props} />);
+    const { unmount } = render(React.createElement(Component, props));
     
     // Force a synchronous layout to ensure rendering is complete
     // eslint-disable-next-line no-unused-expressions
