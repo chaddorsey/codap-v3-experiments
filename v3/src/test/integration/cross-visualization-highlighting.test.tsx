@@ -18,6 +18,13 @@ import { GraphLayoutContext } from "../../components/graph/hooks/use-graph-layou
 import { DataSetContext } from "../../hooks/use-data-set-context"
 import { GraphDataConfigurationContext } from "../../components/graph/hooks/use-graph-data-configuration-context"
 import { createRef } from "react"
+import { ScatterPlotModel } from "../../components/graph/plots/scatter-plot/scatter-plot-model"
+import { BarChartModel } from "../../components/graph/plots/bar-chart/bar-chart-model"
+import { CasePlotModel } from "../../components/graph/plots/case-plot/case-plot-model"
+import { HistogramModel } from "../../components/graph/plots/histogram/histogram-model"
+import { LinePlotModel } from "../../components/graph/plots/line-plot/line-plot-model"
+import { DotChartModel } from "../../components/graph/plots/dot-chart/dot-chart-model"
+import { BinnedDotPlotModel } from "../../components/graph/plots/binned-dot-plot/binned-dot-plot-model"
 
 // Mock the DotLinePlot component to avoid rendering actual Pixi components
 jest.mock("../../components/graph/plots/dot-plot/dot-line-plot", () => ({
@@ -254,6 +261,139 @@ describe("Cross-Visualization Highlighting Integration Tests", () => {
     expect(selectedCases).not.toContain("case1")
     expect(selectedCases).toContain("case2")
   })
+
+  test("cross-visualization highlighting works across all visualization types", async () => {
+    // Create a richer dataset with more attributes for different visualization types
+    const richDataset = DataSet.create({
+      name: "Rich Test Dataset",
+      collections: [
+        CollectionModel.create({
+          id: "collection1",
+          name: "Collection 1",
+          attributes: [
+            Attribute.create({ id: "numeric1", name: "Numeric 1", type: "numeric" }),
+            Attribute.create({ id: "numeric2", name: "Numeric 2", type: "numeric" }),
+            Attribute.create({ id: "categorical", name: "Category", type: "categorical" })
+          ]
+        })
+      ]
+    })
+    
+    // Add cases with varied data for different visualization types
+    richDataset.addCases([
+      { __id__: "case1", numeric1: 10, numeric2: 20, categorical: "A" },
+      { __id__: "case2", numeric1: 15, numeric2: 25, categorical: "B" },
+      { __id__: "case3", numeric1: 20, numeric2: 30, categorical: "A" },
+      { __id__: "case4", numeric1: 25, numeric2: 35, categorical: "C" },
+      { __id__: "case5", numeric1: 30, numeric2: 40, categorical: "B" }
+    ])
+
+    // Create a mock ref for the abovePointsGroup
+    const abovePointsGroupRef = createRef<SVGGElement>()
+    
+    // Create different visualization models
+    const dotPlotModel = createGraphModelWithPlot(richDataset, "numeric1", DotPlotModel.create())
+    const scatterPlotModel = createGraphModelWithPlot(richDataset, "numeric1", ScatterPlotModel.create(), "numeric2")
+    const barChartModel = createGraphModelWithPlot(richDataset, "categorical", BarChartModel.create(), "numeric1")
+    const casePlotModel = createGraphModelWithPlot(richDataset, "numeric1", CasePlotModel.create())
+    const histogramModel = createGraphModelWithPlot(richDataset, "numeric1", HistogramModel.create())
+    const linePlotModel = createGraphModelWithPlot(richDataset, "numeric1", LinePlotModel.create())
+    const dotChartModel = createGraphModelWithPlot(richDataset, "categorical", DotChartModel.create(), "numeric1")
+    const binnedDotPlotModel = createGraphModelWithPlot(richDataset, "numeric1", BinnedDotPlotModel.create())
+    
+    // Render all visualization types
+    render(
+      <div>
+        <div data-testid="dot-plot">
+          <GraphContextProvider graphModel={dotPlotModel} dataset={richDataset} layout={new GraphLayout()}>
+            <DotLinePlot pixiPoints={new PixiPoints()} abovePointsGroupRef={abovePointsGroupRef} />
+          </GraphContextProvider>
+        </div>
+        <div data-testid="scatter-plot">
+          <GraphContextProvider graphModel={scatterPlotModel} dataset={richDataset} layout={new GraphLayout()}>
+            <DotLinePlot pixiPoints={new PixiPoints()} abovePointsGroupRef={abovePointsGroupRef} />
+          </GraphContextProvider>
+        </div>
+        <div data-testid="bar-chart">
+          <GraphContextProvider graphModel={barChartModel} dataset={richDataset} layout={new GraphLayout()}>
+            <DotLinePlot pixiPoints={new PixiPoints()} abovePointsGroupRef={abovePointsGroupRef} />
+          </GraphContextProvider>
+        </div>
+        <div data-testid="case-plot">
+          <GraphContextProvider graphModel={casePlotModel} dataset={richDataset} layout={new GraphLayout()}>
+            <DotLinePlot pixiPoints={new PixiPoints()} abovePointsGroupRef={abovePointsGroupRef} />
+          </GraphContextProvider>
+        </div>
+        <div data-testid="histogram">
+          <GraphContextProvider graphModel={histogramModel} dataset={richDataset} layout={new GraphLayout()}>
+            <DotLinePlot pixiPoints={new PixiPoints()} abovePointsGroupRef={abovePointsGroupRef} />
+          </GraphContextProvider>
+        </div>
+        <div data-testid="line-plot">
+          <GraphContextProvider graphModel={linePlotModel} dataset={richDataset} layout={new GraphLayout()}>
+            <DotLinePlot pixiPoints={new PixiPoints()} abovePointsGroupRef={abovePointsGroupRef} />
+          </GraphContextProvider>
+        </div>
+        <div data-testid="dot-chart">
+          <GraphContextProvider graphModel={dotChartModel} dataset={richDataset} layout={new GraphLayout()}>
+            <DotLinePlot pixiPoints={new PixiPoints()} abovePointsGroupRef={abovePointsGroupRef} />
+          </GraphContextProvider>
+        </div>
+        <div data-testid="binned-dot-plot">
+          <GraphContextProvider graphModel={binnedDotPlotModel} dataset={richDataset} layout={new GraphLayout()}>
+            <DotLinePlot pixiPoints={new PixiPoints()} abovePointsGroupRef={abovePointsGroupRef} />
+          </GraphContextProvider>
+        </div>
+      </div>
+    )
+    
+    // Verify all plots are rendered
+    expect(screen.getAllByTestId("dot-line-plot")).toHaveLength(8)
+    
+    // Test single selection
+    richDataset.selectCases(["case1"], true)
+    expect(richDataset.isCaseSelected("case1")).toBe(true)
+    expect(Array.from(richDataset.selection)).toContain("case1")
+    
+    // Test multiple selection
+    richDataset.selectCases(["case2", "case3"], true)
+    expect(richDataset.isCaseSelected("case1")).toBe(true)
+    expect(richDataset.isCaseSelected("case2")).toBe(true)
+    expect(richDataset.isCaseSelected("case3")).toBe(true)
+    
+    const selectedCases = Array.from(richDataset.selection)
+    expect(selectedCases).toContain("case1")
+    expect(selectedCases).toContain("case2")
+    expect(selectedCases).toContain("case3")
+    
+    // Test deselection
+    richDataset.selectCases(["case1"], false)
+    expect(richDataset.isCaseSelected("case1")).toBe(false)
+    expect(richDataset.isCaseSelected("case2")).toBe(true)
+    expect(richDataset.isCaseSelected("case3")).toBe(true)
+    
+    const updatedSelectedCases = Array.from(richDataset.selection)
+    expect(updatedSelectedCases).not.toContain("case1")
+    expect(updatedSelectedCases).toContain("case2")
+    expect(updatedSelectedCases).toContain("case3")
+    
+    // Test select all
+    richDataset.selectAll(true)
+    expect(richDataset.isCaseSelected("case1")).toBe(true)
+    expect(richDataset.isCaseSelected("case2")).toBe(true)
+    expect(richDataset.isCaseSelected("case3")).toBe(true)
+    expect(richDataset.isCaseSelected("case4")).toBe(true)
+    expect(richDataset.isCaseSelected("case5")).toBe(true)
+    
+    // Test deselect all
+    richDataset.selectAll(false)
+    expect(richDataset.isCaseSelected("case1")).toBe(false)
+    expect(richDataset.isCaseSelected("case2")).toBe(false)
+    expect(richDataset.isCaseSelected("case3")).toBe(false)
+    expect(richDataset.isCaseSelected("case4")).toBe(false)
+    expect(richDataset.isCaseSelected("case5")).toBe(false)
+    expect(Array.from(richDataset.selection).length).toBe(0)
+  })
 })
 
 // Helper function to create a graph model with a specific attribute
@@ -264,7 +404,7 @@ function createGraphModel(dataset: typeof DataSet.Type, attributeId: string) {
   
   // Set the attribute for the x-axis
   dataConfig.setAttribute("x", {
-    attributeId,
+    attributeID: attributeId,
     collectionId: "collection1"
   })
   
@@ -276,6 +416,47 @@ function createGraphModel(dataset: typeof DataSet.Type, attributeId: string) {
     layers: [
       GraphPointLayerModel.create({
         id: `layer-${attributeId}`,
+        type: "graphPointLayer"
+      })
+    ]
+  })
+  
+  return graphModel
+}
+
+// Helper function to create a graph model with a specific plot type
+function createGraphModelWithPlot(
+  dataset: typeof DataSet.Type, 
+  primaryAttributeId: string, 
+  plot: any, 
+  secondaryAttributeId?: string
+) {
+  const dataConfig = GraphDataConfigurationModel.create({
+    datasetId: dataset.id
+  })
+  
+  // Set the attribute for the x-axis
+  dataConfig.setAttribute("x", {
+    attributeID: primaryAttributeId,
+    collectionId: "collection1"
+  })
+  
+  // Set the attribute for the y-axis if provided
+  if (secondaryAttributeId) {
+    dataConfig.setAttribute("y", {
+      attributeID: secondaryAttributeId,
+      collectionId: "collection1"
+    })
+  }
+  
+  // Create a graph model with the specified plot
+  const graphModel = GraphContentModel.create({
+    id: `graph-${primaryAttributeId}-${secondaryAttributeId || "single"}`,
+    dataConfiguration: dataConfig,
+    plot,
+    layers: [
+      GraphPointLayerModel.create({
+        id: `layer-${primaryAttributeId}-${secondaryAttributeId || "single"}`,
         type: "graphPointLayer"
       })
     ]
