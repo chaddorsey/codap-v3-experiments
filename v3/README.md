@@ -98,67 +98,6 @@ To deploy a production release:
 [Here](https://github.com/concord-consortium/codap/blob/main/v3/versions.md) is a link to the various versions of CODAP along with their release dates.
 
 ### Testing
-- run `npm run lint` to lint the source files
-- run `npm run lint:fix` to lint the source files and fix correctable issues
-- run `npm run test` to run the jest tests
-- run `npm run test -- a-particular.test` to run a particular test
-- run `npm run test:coverage` to run the jest tests and print out coverage statistics for the tested files
-- run `npm run test:coverage -- a-particular.test` to run a particular test and print out coverage statistics just for the specified tests
-- run `npm start` in one terminal and `npm run test:cypress` to run the cypress tests locally against a headless browser
-- run `npm start` in one terminal and `npm run test:cypress -- --spec cypress/e2e/a-particular.spec.ts` to run a particular cypress test locally
-- run `npm start` in one terminal and `npm run test:cypress:open` to run the cypress tests against an actual browser with the ability to debug, etc.
-
-##### Cypress Run Options
-
-Inside of your `package.json` file:
-1. `--browser browser-name`: define browser for running tests
-2. `--group group-name`: assign a group name for tests running
-3. `--spec`: define the spec files to run
-4. `--headed`: show cypress test runner GUI while running test (will exit by default when done)
-5. `--no-exit`: keep cypress test runner GUI open when done running
-6. `--record`: decide whether or not tests will have video recordings
-7. `--key`: specify your secret record key
-8. `--reporter`: specify a mocha reporter
-
-##### Cypress Run Examples
-
-1. `cypress run --browser chrome` will run cypress in a chrome browser
-2. `cypress run --headed --no-exit` will open cypress test runner when tests begin to run, and it will remain open when tests are finished running.
-3. `cypress run --spec 'cypress/integration/examples/smoke-test.js'` will point to a smoke-test file rather than running all of the test files for a project.
-
-### Debugging
-
-Various developer features can be enabled by adding a `debug` local storage key with one or more of the following flags separated by spaces. Local storage is specific to the domain that CODAP is running on. In Chrome local storage can be edited by opening the developer tools and going to the "Application" tab. Then find "Storage/Local storage" and the domain that CODAP is running on.
-
-- `caseIds` displays the id of each case in the index column of the case table
-- `cfmEvents` console log all events received from the CFM
-- `cfmLocalStorage` enable the CFM local storage provider so documents can be saved and loaded from the browser's local storage
-- `cfmNoAutoSave` disable CFM auto-save for any document loaded by the CFM
-- `document` this will add the active document as `window.currentDocument`, you can use `currentDocument.toJSON()` to views the current documents content. You can also use `currentDocument.treeManagerAPI.document.toJSON()` to inspect the history of the document.
-- `eventModification` print warnings with stack traces when code is modifying default browser event behavior. See `debug-event-modification.ts` for the list of methods that are monitored.
-- `formulas` print info about recalculating formulas
-- `history` this will: print some info to the console as the history system records changes, print the full history as JSON each time it is loaded from Firestore, and provide a `window.historyDocument` so you can inspect the document while navigating the history.
-- `logger` console log all messages sent to the logging service
-- `map` print info about interactions with the map component
-- `pixiPoints` this adds a map of tileId keys to PixiPoint instances as `window.pixiPointsMap`. This is also always available in Cypress.
-- `plugins` enable some extra plugins in the plugin menu and print information about interactions with plugins.
-- `undo` this will print information about each action that is added to the undo stack.
-
-##### Why Did You Render?
-
-To debug React rendering problems, the [why-did-you-render](https://www.npmjs.com/package/@welldone-software/why-did-you-render) utility is available. To use it:
-- uncomment the `import "../why-did-you-render.ts"` line in `index.tsx`
-- by default, all "pure" components are tracked
-- this can be configured in the local `why-did-you-render.ts` file
-- individual components can be tracked by setting `MyComponent.whyDidYouRender = true`
-
-Remember not to commit any of these debug-only changes to the repository.
-
-## License
-
-Starter Projects are Copyright 2022 (c) by the Concord Consortium and is distributed under the [MIT license](http://www.opensource.org/licenses/MIT).
-
-See license.md for the complete license text.
 
 CODAP v3 uses Jest for unit and integration testing. 
 
@@ -181,6 +120,9 @@ npm test path/to/test/file.test.tsx
 Integration tests verify that different parts of the application work together correctly. CODAP v3 includes integration tests for:
 
 1. **Cross-Visualization Highlighting**: Tests that selecting data points in one visualization correctly highlights the same points in other visualizations. This is a key feature that allows users to see the same data from different perspectives.
+   - Basic tests verify selection synchronization between two visualizations
+   - Comprehensive tests verify that selection works consistently across all visualization types (Dot Plot, Scatter Plot, Bar Chart, Case Plot, Histogram, Line Plot, Dot Chart, and Binned Dot Plot)
+   - Tests cover single selection, multiple selection, deselection, and select/deselect all operations
 
 To run integration tests:
 
@@ -189,3 +131,5 @@ npm test src/test/integration
 ```
 
 All visualization components have comprehensive unit tests that verify rendering, interaction, and performance aspects. The integration tests build on these unit tests to ensure components work together as expected.
+
+See license.md for the complete license text.
