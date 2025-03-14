@@ -29,17 +29,21 @@ export function createTestAttribute(
   type: AttributeType = 'numeric',
   options: Partial<SnapshotIn<typeof Attribute>> = {}
 ): ITestAttribute {
+  // Create a new options object with the type property
+  const attributeOptions = {
+    ...options,
+    type
+  };
+  
   return Attribute.create({
     id: options.id || `attr_${name}`,
     name,
-    type,
     description: options.description || '',
     formula: options.formula || '',
     precision: options.precision,
-    unit: options.unit || '',
+    units: options.units || '',
     editable: options.editable !== undefined ? options.editable : true,
-    hidden: options.hidden || false,
-    ...options
+    ...attributeOptions
   });
 }
 
@@ -58,13 +62,7 @@ export function createTestCollection(
   return CollectionModel.create({
     id: options.id || `collection_${name}`,
     name,
-    title: options.title || name,
-    description: options.description || '',
-    parent: options.parent || '',
-    attributes: attributes.reduce((acc, attr) => {
-      acc[attr.id] = attr;
-      return acc;
-    }, {} as Record<string, ITestAttribute>),
+    attributes: attributes.map(attr => attr.id),
     ...options
   });
 }
@@ -157,64 +155,58 @@ export function createSampleDatasetStructure(
     numCases = 10,
     includeNumeric = true,
     includeCategorial = true,
-    includeDateTime = true
+    includeDateTime = false
   } = options;
 
   // Create attributes
-  const attributes: ReturnType<typeof createAttributeDefinition>[] = [];
-  
+  const attributes: ITestAttribute[] = [];
+
   if (includeNumeric) {
-    attributes.push(createAttributeDefinition('attr_value', 'value', 'numeric'));
-    attributes.push(createAttributeDefinition('attr_count', 'count', 'numeric'));
-  }
-  
-  if (includeCategorial) {
-    attributes.push(createAttributeDefinition('attr_category', 'category', 'categorical'));
-    attributes.push(createAttributeDefinition('attr_group', 'group', 'categorical'));
-  }
-  
-  if (includeDateTime) {
-    attributes.push(createAttributeDefinition('attr_date', 'date', 'date'));
-    attributes.push(createAttributeDefinition('attr_time', 'time', 'numeric'));
+    attributes.push(createTestAttribute('height', 'numeric'));
+    attributes.push(createTestAttribute('weight', 'numeric'));
+    attributes.push(createTestAttribute('age', 'numeric'));
   }
 
-  // Create a collection
-  const collection = createCollectionDefinition(
-    'collection_main',
-    'main',
-    attributes.map(attr => attr.id)
-  );
+  if (includeCategorial) {
+    attributes.push(createTestAttribute('gender', 'categorical'));
+    attributes.push(createTestAttribute('region', 'categorical'));
+  }
+
+  if (includeDateTime) {
+    attributes.push(createTestAttribute('date', 'date'));
+    attributes.push(createTestAttribute('time', 'numeric', { units: 'seconds' }));
+  }
+
+  // Create a collection with these attributes
+  const collection = createTestCollection('main', attributes);
 
   // Create cases
-  const categories = ['A', 'B', 'C'];
-  const groups = ['Group 1', 'Group 2'];
-  
-  const cases = createTestCases(numCases, (i) => {
-    const caseValues: Record<string, any> = {};
-    
-    if (includeNumeric) {
-      caseValues['attr_value'] = Math.round(Math.random() * 100);
-      caseValues['attr_count'] = Math.round(Math.random() * 10);
-    }
-    
-    if (includeCategorial) {
-      caseValues['attr_category'] = categories[Math.floor(Math.random() * categories.length)];
-      caseValues['attr_group'] = groups[Math.floor(Math.random() * groups.length)];
-    }
-    
-    if (includeDateTime) {
-      const date = new Date();
-      date.setDate(date.getDate() - Math.floor(Math.random() * 30));
-      caseValues['attr_date'] = date.toISOString().split('T')[0];
-      caseValues['attr_time'] = Math.floor(Math.random() * 86400);
-    }
-    
-    return caseValues;
-  });
+  const cases: ICase[] = [];
+  for (let i = 0; i < numCases; i++) {
+    const caseValues: Record<string, any> & { __id__: string } = {
+      __id__: `case_${i}`
+    };
+
+    // Add values for each attribute
+    attributes.forEach(attr => {
+      if (attr && attr.type === 'numeric') {
+        caseValues[attr.name] = Math.floor(Math.random() * 100).toString();
+      } else if (attr && attr.type === 'categorical') {
+        const categories = ['A', 'B', 'C', 'D'];
+        caseValues[attr.name] = categories[Math.floor(Math.random() * categories.length)];
+      } else if (attr && attr.type === 'date') {
+        const date = new Date();
+        date.setDate(date.getDate() - Math.floor(Math.random() * 365));
+        caseValues[attr.name] = date.toISOString().split('T')[0];
+      }
+    });
+
+    cases.push(caseValues);
+  }
 
   return {
     attributes,
-    collections: [collection],
+    collection,
     cases
   };
 }
@@ -226,8 +218,15 @@ export function createSampleDatasetStructure(
  * @returns Hierarchical data structure
  */
 export function createHierarchicalData(depth = 3, childrenPerNode = 2) {
-  function createNode(id: string, name: string, currentDepth: number): any {
-    const node = { id, name, children: [] };
+  // Define a proper type for the node
+  type HierarchicalNode = {
+    id: string;
+    name: string;
+    children: HierarchicalNode[];
+  };
+
+  function createNode(id: string, name: string, currentDepth: number): HierarchicalNode {
+    const node: HierarchicalNode = { id, name, children: [] };
     
     if (currentDepth < depth) {
       for (let i = 0; i < childrenPerNode; i++) {
@@ -289,24 +288,24 @@ export function createTestDataSet(
   const dataSet = DataSet.create({
     id: options.id || `dataset_${name}`,
     name,
-    title: options.title || name,
+    _title: options._title || name,
     description: options.description || '',
     ...options
   });
 
-  // Add collections
+  // Add collections as snapshots
   collections.forEach(collection => {
-    dataSet.addCollection(collection);
+    // Create a snapshot of the collection with just the necessary properties
+    const collectionSnapshot = {
+      id: collection.id,
+      attributes: collection.attributes ? collection.attributes.map(attr => attr?.id).filter(Boolean) : []
+    };
+    dataSet.addCollection(collectionSnapshot);
   });
 
   // Add cases
   if (cases.length > 0) {
-    // Check if addCasesWithIDs exists, otherwise use addCases
-    if (typeof dataSet.addCasesWithIDs === 'function') {
-      dataSet.addCasesWithIDs(cases);
-    } else if (typeof dataSet.addCases === 'function') {
-      dataSet.addCases(cases);
-    }
+    dataSet.addCases(cases);
   }
 
   return dataSet;
@@ -349,7 +348,7 @@ export function createSampleDataSet(
   
   if (includeDateTime) {
     attributes.push(createTestAttribute('date', 'date'));
-    attributes.push(createTestAttribute('time', 'numeric', { unit: 'seconds' }));
+    attributes.push(createTestAttribute('time', 'numeric', { units: 'seconds' }));
   }
 
   // Create a collection with these attributes

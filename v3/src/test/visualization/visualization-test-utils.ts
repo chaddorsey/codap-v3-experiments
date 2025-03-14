@@ -1,18 +1,18 @@
 /**
- * Visualization Testing Utilities
+ * Visualization Test Utilities
  * 
- * This file contains utilities for testing visualization components in CODAP v3.
+ * This file contains utilities for testing visualization components.
  */
 
-import React from 'react';
+import React, { ComponentType, ReactElement } from 'react';
 import { render, RenderOptions, RenderResult, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Instance } from 'mobx-state-tree';
-import { ICase } from '../../../v3/src/models/data/data-set-types';
-import { DataSet } from '../../../v3/src/models/data/data-set';
+import { ICase } from '../../models/data/data-set-types';
+import { DataSet } from '../../models/data/data-set';
 
 // Define our own ITestDataSet interface using the Instance type
-type ITestDataSet = Instance<typeof DataSet>;
+type ITestDataSet = any; // Simplified for now
 
 /**
  * Visualization-specific test utilities
@@ -53,7 +53,7 @@ export interface RenderVisualizationOptions extends RenderOptions {
  * testing utilities along with component-specific helpers
  */
 export function renderVisualization<P>(
-  Component: React.ComponentType<P>,
+  Component: ComponentType<P>,
   props: P,
   options: RenderVisualizationOptions = {}
 ): RenderResult & VisualizationTestUtils {
@@ -66,7 +66,10 @@ export function renderVisualization<P>(
     ...renderOptions
   } = options;
 
-  const result = render(React.createElement(Component, props), renderOptions);
+  // Use a more explicit type assertion to handle the component type
+  // This is necessary because React.createElement has strict type checking
+  const element = React.createElement(Component as unknown as React.ComponentType<any>, props);
+  const result = render(element, renderOptions);
   const { container } = result;
 
   return {

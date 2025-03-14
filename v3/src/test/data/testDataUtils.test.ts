@@ -86,7 +86,7 @@ describe('Test Data Utilities', () => {
       const dataset = createSampleDatasetStructure();
       
       expect(dataset.attributes.length).toBeGreaterThan(0);
-      expect(dataset.collections.length).toBe(1);
+      expect(dataset.collection).toBeDefined();
       expect(dataset.cases.length).toBe(10);
     });
     

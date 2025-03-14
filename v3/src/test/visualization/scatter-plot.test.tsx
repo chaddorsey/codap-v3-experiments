@@ -4,7 +4,7 @@
  * This file contains tests for the scatter plot component using the visualization testing utilities.
  */
 
-import React from 'react';
+import React, { createRef } from 'react';
 import { render, screen } from '@testing-library/react';
 import { 
   renderVisualization, 
@@ -38,24 +38,47 @@ interface TestDataPoint {
   color?: string;
 }
 
-// Create a more complete mock for PixiPoints
+// Create a mock for PixiPoints that includes test data
 interface MockPixiPoints {
+  // Required properties from the actual PixiPoints interface
+  ticker: any;
+  tickerStopTimeoutId: any;
+  isSafari: boolean;
+  mostRecentSvgElement: any;
   stage: any;
   pointsContainer: any;
   background: any;
   subPlotMasks: any;
-  data: TestDataPoint[];
+  
+  // Our test data
+  testData: TestDataPoint[];
+  
+  // Mock methods
   getPointForCaseData: jest.Mock;
   setPointPosition: jest.Mock;
-  // Add other required properties with mock implementations
+  addPoint: jest.Mock;
+  removePoint: jest.Mock;
+  updatePointAppearance: jest.Mock;
+  updatePointSelection: jest.Mock;
+  updatePointHighlight: jest.Mock;
+  getPointsForCase: jest.Mock;
+  getAllPoints: jest.Mock;
+  getSelectedPoints: jest.Mock;
+  clearSelection: jest.Mock;
+  clearHighlight: jest.Mock;
+  destroy: jest.Mock;
+  
+  // Allow additional properties
   [key: string]: any;
 }
 
 // Mock the ScatterPlot component and its dependencies
 jest.mock('../../components/graph/plots/scatter-plot/scatter-plot', () => ({
-  ScatterPlot: ({ pixiPoints }: IPlotProps) => {
+  ScatterPlot: ({ pixiPoints, abovePointsGroupRef }: IPlotProps) => {
     // For testing purposes, we'll extract data from pixiPoints mock
-    const data = (pixiPoints as MockPixiPoints)?.data || [];
+    // Use a safe type assertion and access testData instead of data
+    const mockPixiPoints = pixiPoints as unknown as MockPixiPoints;
+    const data = mockPixiPoints?.testData || [];
     
     return (
       <div data-testid="scatter-plot">
@@ -79,6 +102,7 @@ jest.mock('../../components/graph/plots/scatter-plot/scatter-plot', () => ({
               fill={point.color || "blue"}
             />
           ))}
+          <g ref={abovePointsGroupRef}></g>
         </svg>
       </div>
     );
@@ -129,7 +153,7 @@ jest.mock('../../components/graph/hooks/use-graph-layout-context', () => ({
 // Import the mocked component
 import { ScatterPlot } from '../../components/graph/plots/scatter-plot/scatter-plot';
 
-describe('Scatter Plot Component', () => {
+describe('ScatterPlot', () => {
   // Test data
   const testData: TestDataPoint[] = [
     { id: '1', x: 1, y: 2 },
@@ -138,32 +162,54 @@ describe('Scatter Plot Component', () => {
   ];
 
   // Create a mock pixiPoints object with our test data
-  const createMockPixiPoints = (data: TestDataPoint[]): MockPixiPoints => ({
-    data,
-    stage: {},
-    pointsContainer: {},
-    background: {},
-    subPlotMasks: {},
-    getPointForCaseData: jest.fn(),
-    setPointPosition: jest.fn(),
-    addPoint: jest.fn(),
-    removePoint: jest.fn(),
-    updatePointAppearance: jest.fn(),
-    updatePointSelection: jest.fn(),
-    updatePointHighlight: jest.fn(),
-    getPointsForCase: jest.fn(),
-    getAllPoints: jest.fn(() => []),
-    getSelectedPoints: jest.fn(() => []),
-    clearSelection: jest.fn(),
-    clearHighlight: jest.fn(),
-    destroy: jest.fn()
-  });
+  const createMockPixiPoints = (data: TestDataPoint[]) => {
+    const mockPixiPoints: MockPixiPoints = {
+      // Required properties
+      ticker: {},
+      tickerStopTimeoutId: null,
+      isSafari: false,
+      mostRecentSvgElement: null,
+      stage: {},
+      pointsContainer: {},
+      background: {},
+      subPlotMasks: {},
+      
+      // Our test data
+      testData: data,
+      
+      // Mock methods
+      getPointForCaseData: jest.fn(),
+      setPointPosition: jest.fn(),
+      addPoint: jest.fn(),
+      removePoint: jest.fn(),
+      updatePointAppearance: jest.fn(),
+      updatePointSelection: jest.fn(),
+      updatePointHighlight: jest.fn(),
+      getPointsForCase: jest.fn(),
+      getAllPoints: jest.fn(() => []),
+      getSelectedPoints: jest.fn(() => []),
+      clearSelection: jest.fn(),
+      clearHighlight: jest.fn(),
+      destroy: jest.fn()
+    };
+    
+    // Cast to any to satisfy the PixiPoints type requirement
+    return mockPixiPoints as any;
+  };
+
+  // Create a standard set of props for testing
+  const createTestProps = (data: TestDataPoint[] = testData) => {
+    return {
+      pixiPoints: createMockPixiPoints(data),
+      abovePointsGroupRef: createRef<SVGGElement>()
+    };
+  };
 
   describe('Rendering Tests', () => {
     it('should render data points correctly', () => {
       const { getDataPoints, getXAxis, getYAxis } = renderVisualization(
         ScatterPlot,
-        { pixiPoints: createMockPixiPoints(testData) }
+        createTestProps()
       );
 
       // Check that the visualization was rendered correctly
@@ -173,7 +219,7 @@ describe('Scatter Plot Component', () => {
     });
 
     it('should position data points according to their coordinates', () => {
-      const { container } = render(<ScatterPlot pixiPoints={createMockPixiPoints(testData)} />);
+      const { container } = render(<ScatterPlot {...createTestProps()} />);
       
       // Verify data points
       verifyDataPoints(container, testData, {
@@ -185,7 +231,7 @@ describe('Scatter Plot Component', () => {
     it('should handle empty data', () => {
       const { getDataPoints } = renderVisualization(
         ScatterPlot,
-        { pixiPoints: createMockPixiPoints([]) }
+        createTestProps([])
       );
 
       // Check that no data points are rendered
@@ -202,7 +248,7 @@ describe('Scatter Plot Component', () => {
 
       const { getDataPoints } = renderVisualization(
         ScatterPlot,
-        { pixiPoints: createMockPixiPoints(largeData) }
+        createTestProps(largeData)
       );
 
       // Check that all data points are rendered
@@ -214,7 +260,7 @@ describe('Scatter Plot Component', () => {
     it('should handle clicking on data points', async () => {
       const { getDataPointByIndex } = renderVisualization(
         ScatterPlot,
-        { pixiPoints: createMockPixiPoints(testData) }
+        createTestProps()
       );
 
       const dataPoint = getDataPointByIndex(0);
@@ -231,7 +277,7 @@ describe('Scatter Plot Component', () => {
     it('should handle hovering over data points', async () => {
       const { getDataPointByIndex } = renderVisualization(
         ScatterPlot,
-        { pixiPoints: createMockPixiPoints(testData) }
+        createTestProps()
       );
 
       const dataPoint = getDataPointByIndex(0);
@@ -246,7 +292,7 @@ describe('Scatter Plot Component', () => {
     });
 
     it('should handle zooming', async () => {
-      const { container } = render(<ScatterPlot pixiPoints={createMockPixiPoints(testData)} />);
+      const { container } = render(<ScatterPlot {...createTestProps()} />);
       
       // Simulate zooming
       await simulateZoom(container, { factor: 1.5 });
@@ -256,7 +302,7 @@ describe('Scatter Plot Component', () => {
     });
 
     it('should handle panning', async () => {
-      const { container } = render(<ScatterPlot pixiPoints={createMockPixiPoints(testData)} />);
+      const { container } = render(<ScatterPlot {...createTestProps()} />);
       
       // Simulate panning
       await simulatePan(container, { deltaX: 10, deltaY: 20 });
@@ -266,7 +312,7 @@ describe('Scatter Plot Component', () => {
     });
 
     it('should handle selection', async () => {
-      const { container } = render(<ScatterPlot pixiPoints={createMockPixiPoints(testData)} />);
+      const { container } = render(<ScatterPlot {...createTestProps()} />);
       
       // Simulate selection
       await simulateSelection(container, {
@@ -281,7 +327,7 @@ describe('Scatter Plot Component', () => {
 
   describe('Snapshot Tests', () => {
     it('should match baseline snapshot', () => {
-      const { container } = render(<ScatterPlot pixiPoints={createMockPixiPoints(testData)} />);
+      const { container } = render(<ScatterPlot {...createTestProps()} />);
       
       // Create a snapshot of the current visualization
       const snapshot = snapshotVisualization(container.firstChild as HTMLElement);
@@ -314,7 +360,7 @@ describe('Scatter Plot Component', () => {
     it('should render efficiently', async () => {
       const result = await measureRenderingPerformance(
         ScatterPlot,
-        { pixiPoints: createMockPixiPoints(testData) },
+        createTestProps(),
         { iterations: 2, warmupIterations: 1 }
       );
       
@@ -330,7 +376,7 @@ describe('Scatter Plot Component', () => {
     });
 
     it('should handle data updates efficiently', async () => {
-      const { container } = render(<ScatterPlot pixiPoints={createMockPixiPoints(testData)} />);
+      const { container } = render(<ScatterPlot {...createTestProps()} />);
       
       const updateData = jest.fn();
       const dataUpdate = (data: TestDataPoint[]) => {
@@ -356,7 +402,7 @@ describe('Scatter Plot Component', () => {
     });
 
     it('should handle interactions efficiently', async () => {
-      const { container } = render(<ScatterPlot pixiPoints={createMockPixiPoints(testData)} />);
+      const { container } = render(<ScatterPlot {...createTestProps()} />);
       
       const interaction = async () => {
         await simulateZoom(container, { factor: 1.2 });
