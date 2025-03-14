@@ -26,30 +26,42 @@ Based on the codebase analysis, we need to test the following visualization comp
 
 1. **Scatter Plot** (`components/graph/plots/scatter-plot/scatter-plot.tsx`)
    - Status: Initial tests created ✅
+   - Tests cover: Rendering, interactions, performance, snapshots
 
 2. **Bar Chart** (`components/graph/plots/bar-chart/bar-chart.tsx`)
    - Status: Initial tests created ✅
+   - Tests cover: Rendering, interactions, performance, categorical data
 
 3. **Dot Plot** (`components/graph/plots/dot-plot/dot-line-plot.tsx`)
    - Status: Initial tests created ✅
+   - Tests cover: Rendering, interactions, performance, connecting lines
 
 4. **Case Plot** (`components/graph/plots/case-plot/case-plot.tsx`)
    - Status: Initial tests created ✅
+   - Tests cover: Rendering, interactions, performance, drag operations
 
 5. **Binned Dot Plot** (`components/graph/plots/binned-dot-plot/binned-dot-plot.tsx`)
    - Status: Initial tests created ✅
+   - Tests cover: Rendering, interactions, performance, bin boundaries
 
 6. **Dot Chart** (`components/graph/plots/dot-chart/dot-chart.tsx`)
    - Status: Initial tests created ✅
+   - Tests cover: Rendering, interactions, performance, categorical grouping
 
 7. **Line Plot** (`components/graph/plots/line-plot/line-plot.tsx`)
    - Status: Not tested yet
+   - Priority: Medium
+   - Special considerations: Line connections, curve smoothing
 
 8. **Histogram** (`components/graph/plots/histogram/histogram.tsx`)
    - Status: Not tested yet
+   - Priority: Medium
+   - Special considerations: Bin calculations, frequency counts
 
 9. **Dot Line Plot** (`components/graph/plots/dot-line-plot/dot-line-plot.tsx`)
    - Status: Not tested yet
+   - Priority: Medium
+   - Special considerations: Combined dots and lines, multiple series
 
 ### Testing Aspects for Each Component
 
@@ -81,9 +93,22 @@ For each visualization component, we should test:
 - Screen reader compatibility
 - Color contrast and visibility
 
+## Progress Summary
+
+We have successfully implemented tests for 6 out of 9 visualization components:
+
+- **Completed (6/9)**: Scatter Plot, Bar Chart, Dot Plot, Case Plot, Binned Dot Plot, Dot Chart
+- **Remaining (3/9)**: Line Plot, Histogram, Dot Line Plot
+
+Each completed component has tests covering:
+- Basic rendering functionality
+- User interactions (clicking, hovering)
+- Performance with various data sizes
+- Component-specific features
+
 ## TODO List
 
-### High Priority
+### High Priority (Completed)
 - [x] Create test for Scatter Plot component
 - [x] Create test for Bar Chart component
 - [x] Create test for Dot Plot component
@@ -91,15 +116,54 @@ For each visualization component, we should test:
 - [x] Create test for Binned Dot Plot component
 - [x] Create test for Dot Chart component
 
-### Medium Priority
+### Medium Priority (Next Steps)
 - [ ] Create test for Line Plot component
-- [ ] Create test for Histogram component
-- [ ] Create test for Dot Line Plot component
+  - Focus on line rendering, data point connections, and curve smoothing
+  - Test with multiple data series
+  - Test with missing data points
 
-### Low Priority
+- [ ] Create test for Histogram component
+  - Focus on bin calculation and rendering
+  - Test with different bin widths and alignments
+  - Test with various data distributions
+
+- [ ] Create test for Dot Line Plot component
+  - Focus on combined dot and line rendering
+  - Test interaction between dots and lines
+  - Test with multiple data series
+
+### Low Priority (Future Enhancements)
 - [ ] Add integration tests for multiple visualizations working together
 - [ ] Add tests for visualization-specific features (e.g., bar chart stacking, line plot smoothing)
 - [ ] Create performance benchmarks for all visualization types
+- [ ] Add accessibility tests for keyboard navigation and screen readers
+- [ ] Add responsive design tests for different screen sizes
+- [ ] Create visual regression tests with snapshots
+
+## Next Steps
+
+1. **Implement Line Plot Tests**:
+   - Examine the Line Plot component structure
+   - Create mock implementations for testing
+   - Implement rendering, interaction, and performance tests
+   - Focus on line-specific features like curve types and data point connections
+
+2. **Implement Histogram Tests**:
+   - Examine the Histogram component structure
+   - Create mock implementations for testing
+   - Implement rendering, interaction, and performance tests
+   - Focus on bin calculation, frequency counts, and bin width adjustments
+
+3. **Implement Dot Line Plot Tests**:
+   - Examine the Dot Line Plot component structure
+   - Create mock implementations for testing
+   - Implement rendering, interaction, and performance tests
+   - Focus on the combination of dots and lines in the same visualization
+
+4. **Enhance Existing Tests**:
+   - Add more comprehensive tests for edge cases
+   - Improve performance testing with larger datasets
+   - Add accessibility testing
 
 ## How to Add a New Visualization Test
 
