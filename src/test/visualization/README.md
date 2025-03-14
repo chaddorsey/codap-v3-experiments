@@ -1,128 +1,141 @@
-# Visualization Testing Utilities
+# Visualization Testing in CODAP v3
 
-This directory contains utilities for testing visualization components in CODAP v3. These utilities provide a comprehensive approach to testing different aspects of visualizations, including rendering, performance, interactions, and accessibility.
+This directory contains utilities and tests for visualization components in CODAP v3.
 
 ## Overview
 
-Testing visualizations is challenging because they involve complex rendering, user interactions, and performance considerations. The utilities in this directory aim to make testing visualizations more manageable by providing specialized tools for different testing scenarios.
+The visualization testing framework provides tools for testing various aspects of visualization components:
 
-## Utility Files
+1. **Rendering Tests**: Verify that components render correctly with different data inputs
+2. **Interaction Tests**: Verify that components respond correctly to user interactions
+3. **Performance Tests**: Measure and ensure acceptable performance for rendering and interactions
+4. **Snapshot Tests**: Capture and compare visual representations to detect unexpected changes
 
-- **visualization-test-utils.ts**: Core utilities for testing visualization components
-- **performance-test-utils.ts**: Utilities for measuring and testing visualization performance
-- **snapshot-test-utils.ts**: Utilities for snapshot testing visualizations
-- **interaction-test-utils.ts**: Utilities for testing user interactions with visualizations
+## Available Utilities
 
-## Testing Approach
+- `visualization-test-utils.ts`: Core utilities for rendering and verifying visualizations
+- `interaction-test-utils.ts`: Utilities for simulating user interactions (zoom, pan, selection, etc.)
+- `performance-test-utils.ts`: Utilities for measuring rendering and interaction performance
+- `snapshot-test-utils.ts`: Utilities for capturing and comparing visual snapshots
 
-Our approach to testing visualizations involves several complementary strategies:
+## Testing Plan
 
-### 1. Rendering Tests
+### Identified Visualization Components
 
-Verify that visualizations render correctly with different data inputs and configurations.
+Based on the codebase analysis, we need to test the following visualization components:
 
-```typescript
-// Basic rendering test
-test('renders scatter plot with correct number of points', () => {
-  render(<ScatterPlotExample data={testData} />);
-  
-  // Check that all points are rendered
-  const points = screen.getAllByTestId(/^point-/);
-  expect(points).toHaveLength(testData.length);
-});
-```
+1. **Scatter Plot** (`v3/src/components/graph/plots/scatter-plot/scatter-plot.tsx`)
+   - Status: Initial tests created
 
-### 2. Performance Tests
+2. **Bar Chart** (`v3/src/components/graph/plots/bar-chart/bar-chart.tsx`)
+   - Status: Not tested yet
 
-Measure and verify the performance of visualizations, including rendering time, interaction responsiveness, and data update efficiency.
+3. **Line Plot** (`v3/src/components/graph/plots/line-plot/line-plot.tsx`)
+   - Status: Not tested yet
 
-```typescript
-// Performance test
-test('measures rendering performance', async () => {
-  const result = await measureRenderingPerformance(
-    ScatterPlotExample,
-    { data: testData },
-    { iterations: 5, warmupIterations: 2 }
-  );
-  
-  // Log performance results
-  console.log(createPerformanceReport('ScatterPlot Rendering', result));
-  
-  // Basic performance assertion
-  expect(result.medianTime).toBeLessThan(100); // 100ms threshold
-});
-```
+4. **Dot Plot** (`v3/src/components/graph/plots/dot-plot/dot-plot.tsx`)
+   - Status: Not tested yet
 
-### 3. Snapshot Tests
+5. **Histogram** (`v3/src/components/graph/plots/histogram/histogram.tsx`)
+   - Status: Not tested yet
 
-Capture and compare visual snapshots of visualizations to detect unintended visual changes.
+6. **Case Plot** (`v3/src/components/graph/plots/case-plot/case-plot.tsx`)
+   - Status: Not tested yet
 
-```typescript
-// Snapshot test
-test('captures and compares visualization snapshot', async () => {
-  const { container } = render(<ScatterPlotExample data={testData} />);
-  
-  // Capture snapshot
-  const snapshot = snapshotVisualization(container);
-  
-  // Compare with a reference snapshot
-  const referenceSnapshot = '...'; // Reference snapshot data
-  const comparisonResult = compareWithBaseline(container, referenceSnapshot);
-  expect(comparisonResult.matches).toBe(true);
-});
-```
+7. **Dot Chart** (`v3/src/components/graph/plots/dot-chart/dot-chart.tsx`)
+   - Status: Not tested yet
 
-### 4. Interaction Tests
+8. **Dot Line Plot** (`v3/src/components/graph/plots/dot-line-plot/dot-line-plot.tsx`)
+   - Status: Not tested yet
 
-Test user interactions with visualizations, such as clicking, hovering, zooming, and panning.
+9. **Binned Dot Plot** (`v3/src/components/graph/plots/binned-dot-plot/binned-dot-plot.tsx`)
+   - Status: Not tested yet
 
-```typescript
-// Interaction test
-test('selects points on click', () => {
-  render(<ScatterPlotExample data={testData} />);
-  const points = screen.getAllByTestId(/^point-/);
-  
-  // Click on a point to select it
-  fireEvent.click(points[0]);
-  
-  // Check that the point is now selected
-  expect(points[0].getAttribute('fill')).toBe('red');
-});
-```
+### Testing Aspects for Each Component
 
-### 5. Data Validation Tests
+For each visualization component, we should test:
 
-Verify that visualizations correctly represent the underlying data.
+#### 1. Rendering
+- Basic rendering with minimal data
+- Rendering with different data sizes (empty, small, large)
+- Rendering with different attribute configurations
+- Rendering with categorical vs. numerical data
+- Rendering with split attributes (subplots)
+- Rendering with legends
 
-```typescript
-// Data validation test
-test('validates data point rendering', () => {
-  const { container } = render(<ScatterPlotExample data={testData} />);
-  
-  verifyDataPoints(
-    container,
-    testData,
-    {
-      xAccessor: (point) => point.x,
-      yAccessor: (point) => point.y,
-      dataPointSelector: '[data-testid^="point-"]'
-    }
-  );
-});
-```
+#### 2. Interactions
+- Point selection (single and multiple)
+- Hovering over points
+- Zooming and panning
+- Drag and drop operations
+- Keyboard navigation
+- Right-click context menus
 
-### 6. Edge Case Tests
+#### 3. Performance
+- Rendering performance with different data sizes
+- Interaction performance (selection, zoom, pan)
+- Data update performance
 
-Test visualizations with edge cases, such as empty data sets, single data points, or extreme values.
+#### 4. Accessibility
+- Keyboard navigation
+- Screen reader compatibility
+- Color contrast and visibility
+
+## TODO List
+
+### High Priority
+- [x] Create test for Scatter Plot component
+- [ ] Create test for Bar Chart component
+- [ ] Create test for Line Plot component
+- [ ] Create test for Histogram component
+
+### Medium Priority
+- [ ] Create test for Dot Plot component
+- [ ] Create test for Case Plot component
+- [ ] Create test for Dot Chart component
+- [ ] Create test for Dot Line Plot component
+- [ ] Create test for Binned Dot Plot component
+
+### Low Priority
+- [ ] Add integration tests for multiple visualizations working together
+- [ ] Add tests for visualization-specific features (e.g., bar chart stacking, line plot smoothing)
+- [ ] Create performance benchmarks for all visualization types
+
+## How to Add a New Visualization Test
+
+1. Create a new test file in this directory named `[visualization-name].test.tsx`
+2. Import the necessary testing utilities
+3. Mock the component and its dependencies as needed
+4. Write tests for rendering, interactions, and performance
+5. Run the tests using `npm test`
+
+## Example Test Structure
 
 ```typescript
-// Edge case test
-test('handles empty data set gracefully', () => {
-  const { container } = render(<ScatterPlotExample data={[]} />);
-  
-  // Should generate random data when none is provided
-  const points = screen.getAllByTestId(/^point-/);
-  expect(points.length).toBeGreaterThan(0);
+describe('[Visualization] Component', () => {
+  describe('Rendering Tests', () => {
+    it('should render data points correctly', () => {
+      // Test rendering
+    });
+    
+    // More rendering tests...
+  });
+
+  describe('Interaction Tests', () => {
+    it('should handle clicking on data points', async () => {
+      // Test interactions
+    });
+    
+    // More interaction tests...
+  });
+
+  describe('Performance Tests', () => {
+    it('should render efficiently', async () => {
+      // Test performance
+    });
+    
+    // More performance tests...
+  });
 });
 ```
 
