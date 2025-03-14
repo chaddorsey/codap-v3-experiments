@@ -8,19 +8,19 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { DataSet, IDataSet } from '../../../models/data/data-set';
-import { AttributeType } from '../../../models/data/attribute';
-import { AxisPlace } from '../../../models/data-display/axis-model';
-import { ScatterPlotModel } from '../../../models/data-display/scatter-plot-model';
-import { GraphDataConfigurationModel } from '../../../models/data-display/graph-data-configuration-model';
-import { AxisConfigMenu } from '../../../components/graph/axis-config-menu';
-import { DataDisplayModelContext } from '../../../hooks/use-data-display-model';
-import { SharedModelManager } from '../../../models/shared/shared-model-manager';
+import { DataSet, IDataSet } from '../../models/data/data-set';
+import { Attribute } from '../../models/data/attribute';
+import { AxisPlace } from '../../models/data-display/axis-model';
+import { ScatterPlotModel } from '../../models/data-display/scatter-plot-model';
+import { GraphDataConfigurationModel } from '../../models/data-display/graph-data-configuration-model';
+import { AxisConfigMenu } from '../../components/graph/axis-config-menu';
+import { DataDisplayModelContext } from '../../hooks/use-data-display-model';
+import { ISharedModelManager } from '../../models/shared/shared-model-manager';
 import { renderVisualization } from './visualization-test-utils';
 import { simulateDoubleClick } from './interaction-test-utils';
 
 // Mock the necessary components
-jest.mock('../../../components/graph/axis-config-menu', () => ({
+jest.mock('../../components/graph/axis-config-menu', () => ({
   AxisConfigMenu: jest.fn(props => (
     <div data-testid="axis-config-menu">
       <div data-testid="axis-title">{`${props.axis.toUpperCase()} Axis: ${props.attribute?.name}`}</div>
@@ -78,11 +78,11 @@ jest.mock('../../../components/graph/axis-config-menu', () => ({
 function createTestDataset() {
   const dataset = DataSet.create({
     name: "Test Dataset",
-    attributes: [
-      { id: "attr1", name: "score", type: AttributeType.numeric },
-      { id: "attr2", name: "height", type: AttributeType.numeric },
-      { id: "attr3", name: "category", type: AttributeType.categorical }
-    ]
+    attributesMap: {
+      "attr1": { id: "attr1", name: "score", type: "numeric" },
+      "attr2": { id: "attr2", name: "height", type: "numeric" },
+      "attr3": { id: "attr3", name: "category", type: "categorical" }
+    }
   });
   
   // Add some cases
@@ -124,11 +124,11 @@ function createTestVisualizationModel(dataset: IDataSet) {
 // Create a wrapper component for testing
 function TestWrapper({ children, model }: { children: React.ReactNode, model: any }) {
   return (
-    <SharedModelManager>
+    <ISharedModelManager>
       <DataDisplayModelContext.Provider value={model}>
         {children}
       </DataDisplayModelContext.Provider>
-    </SharedModelManager>
+    </ISharedModelManager>
   );
 }
 
@@ -146,7 +146,7 @@ describe('Axis Configuration Menu Interactions', () => {
       const { getByTestId } = render(
         <AxisConfigMenu 
           axis="x" 
-          attribute={{ id: "attr1", name: "score", type: AttributeType.numeric }}
+          attribute={{ id: "attr1", name: "score", type: "numeric" }}
           onScaleChange={jest.fn()}
         />
       );
@@ -161,7 +161,7 @@ describe('Axis Configuration Menu Interactions', () => {
       const { getByTestId } = render(
         <AxisConfigMenu 
           axis="y" 
-          attribute={{ id: "attr2", name: "height", type: AttributeType.numeric }}
+          attribute={{ id: "attr2", name: "height", type: "numeric" }}
           onScaleChange={jest.fn()}
         />
       );
@@ -174,7 +174,7 @@ describe('Axis Configuration Menu Interactions', () => {
       const { getByTestId } = render(
         <AxisConfigMenu 
           axis="x" 
-          attribute={{ id: "attr1", name: "score", type: AttributeType.numeric }}
+          attribute={{ id: "attr1", name: "score", type: "numeric" }}
           hasNegativeValues={true}
           onScaleChange={jest.fn()}
         />
@@ -190,7 +190,7 @@ describe('Axis Configuration Menu Interactions', () => {
       const { getByTestId } = render(
         <AxisConfigMenu 
           axis="y" 
-          attribute={{ id: "attr2", name: "height", type: AttributeType.numeric }}
+          attribute={{ id: "attr2", name: "height", type: "numeric" }}
           onScaleChange={onScaleChange}
         />
       );
@@ -206,7 +206,7 @@ describe('Axis Configuration Menu Interactions', () => {
       const { getByTestId } = render(
         <AxisConfigMenu 
           axis="x" 
-          attribute={{ id: "attr1", name: "score", type: AttributeType.numeric }}
+          attribute={{ id: "attr1", name: "score", type: "numeric" }}
           onMinBoundChange={onMinBoundChange}
         />
       );
@@ -224,7 +224,7 @@ describe('Axis Configuration Menu Interactions', () => {
       const { getByTestId } = render(
         <AxisConfigMenu 
           axis="x" 
-          attribute={{ id: "attr1", name: "score", type: AttributeType.numeric }}
+          attribute={{ id: "attr1", name: "score", type: "numeric" }}
           onMaxBoundChange={onMaxBoundChange}
         />
       );
@@ -253,7 +253,7 @@ describe('Axis Configuration Menu Interactions', () => {
         <TestWrapper model={model}>
           <AxisConfigMenu 
             axis="x" 
-            attribute={{ id: "attr1", name: "score", type: AttributeType.numeric }}
+            attribute={{ id: "attr1", name: "score", type: "numeric" }}
             onScaleChange={(scale: string) => model.dataConfiguration.setAxisScale(AxisPlace.bottom, scale)}
           />
         </TestWrapper>
@@ -276,9 +276,9 @@ describe('Axis Configuration Menu Interactions', () => {
         <TestWrapper model={model}>
           <AxisConfigMenu 
             axis="y" 
-            attribute={{ id: "attr2", name: "height", type: AttributeType.numeric }}
-            onMinBoundChange={(min) => model.dataConfiguration.setAxisBounds(AxisPlace.left, min, undefined)}
-            onMaxBoundChange={(max) => model.dataConfiguration.setAxisBounds(AxisPlace.left, undefined, max)}
+            attribute={{ id: "attr2", name: "height", type: "numeric" }}
+            onMinBoundChange={(min: number) => model.dataConfiguration.setAxisBounds(AxisPlace.left, min, undefined)}
+            onMaxBoundChange={(max: number) => model.dataConfiguration.setAxisBounds(AxisPlace.left, undefined, max)}
           />
         </TestWrapper>
       );
