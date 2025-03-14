@@ -40,7 +40,7 @@ Added utilities in `src/test/visualization/performance-test-utils.ts` for:
 ### Tests and Documentation
 
 - Added comprehensive tests for all utilities
-- Added detailed documentation in `docs/visualization-testing.md`
+- Added detailed documentation in `design/docs/visualization-testing.md` and `design/docs/testing-utilities.md`
 
 ## Testing
 
