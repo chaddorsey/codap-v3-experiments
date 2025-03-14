@@ -5,8 +5,9 @@
  * These utilities help with simulating mouse and keyboard interactions.
  */
 
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { ReactElement } from 'react';
 
 /**
  * Options for simulating zoom
@@ -73,38 +74,71 @@ export interface KeyboardNavigationOptions {
 }
 
 /**
+ * Simulates a click on a data point
+ * 
+ * @param dataPointId - The ID of the data point to click
+ * @param options - Options for the click event
+ * @returns A promise that resolves when the click is complete
+ * 
+ * @example
+ * ```tsx
+ * await clickDataPoint('point-1');
+ * ```
+ */
+export async function clickDataPoint(
+  dataPointId: string,
+  options: { ctrlKey?: boolean; shiftKey?: boolean } = {}
+): Promise<void> {
+  const dataPoint = screen.getByTestId(dataPointId);
+  fireEvent.click(dataPoint, options);
+}
+
+/**
+ * Simulates a hover on a data point
+ * 
+ * @param dataPointId - The ID of the data point to hover
+ * @returns A promise that resolves when the hover is complete
+ * 
+ * @example
+ * ```tsx
+ * await hoverDataPoint('point-1');
+ * ```
+ */
+export async function hoverDataPoint(
+  dataPointId: string
+): Promise<void> {
+  const dataPoint = screen.getByTestId(dataPointId);
+  fireEvent.mouseOver(dataPoint);
+}
+
+/**
  * Simulates a zoom interaction on a visualization
  * 
  * @param element - The element to zoom on
- * @param options - Options for the zoom
+ * @param zoomFactor - The zoom factor (positive for zoom in, negative for zoom out)
+ * @param centerX - The x coordinate of the zoom center
+ * @param centerY - The y coordinate of the zoom center
  * @returns A promise that resolves when the zoom is complete
  * 
  * @example
  * ```tsx
- * await simulateZoom(container, { factor: 1.5 });
+ * await simulateZoom(container, 2, 100, 100);
  * ```
  */
 export async function simulateZoom(
   element: HTMLElement,
-  options: ZoomOptions
+  zoomFactor: number,
+  centerX: number,
+  centerY: number
 ): Promise<void> {
-  const { factor, center } = options;
+  // Calculate the delta based on the zoom factor
+  const deltaY = zoomFactor > 0 ? -100 : 100;
   
-  // Calculate center point if not provided
-  const rect = element.getBoundingClientRect();
-  const centerX = center?.x ?? rect.left + rect.width / 2;
-  const centerY = center?.y ?? rect.top + rect.height / 2;
-  
-  // Calculate delta based on factor
-  // Positive delta for zoom in, negative for zoom out
-  const delta = factor > 1 ? -100 : 100;
-  
-  // Fire wheel event
+  // Create a wheel event with the specified parameters
   fireEvent.wheel(element, {
+    deltaY,
     clientX: centerX,
-    clientY: centerY,
-    deltaY: delta,
-    deltaMode: 0 // Pixel mode
+    clientY: centerY
   });
 }
 
@@ -112,46 +146,40 @@ export async function simulateZoom(
  * Simulates a pan interaction on a visualization
  * 
  * @param element - The element to pan
- * @param options - Options for the pan
+ * @param startX - The starting x coordinate
+ * @param startY - The starting y coordinate
+ * @param endX - The ending x coordinate
+ * @param endY - The ending y coordinate
  * @returns A promise that resolves when the pan is complete
  * 
  * @example
  * ```tsx
- * await simulatePan(container, { deltaX: 10, deltaY: 20 });
+ * await simulatePan(container, 100, 100, 200, 200);
  * ```
  */
 export async function simulatePan(
   element: HTMLElement,
-  options: PanOptions
+  startX: number,
+  startY: number,
+  endX: number,
+  endY: number
 ): Promise<void> {
-  const { deltaX, deltaY } = options;
-  
-  // Calculate start and end points
-  const rect = element.getBoundingClientRect();
-  const startX = rect.left + rect.width / 2;
-  const startY = rect.top + rect.height / 2;
-  const endX = startX + deltaX;
-  const endY = startY + deltaY;
-  
-  // Simulate mouse down
+  // Simulate mouse down at the start position
   fireEvent.mouseDown(element, {
     clientX: startX,
-    clientY: startY,
-    button: 0 // Left button
+    clientY: startY
   });
   
-  // Simulate mouse move
+  // Simulate mouse move to the end position
   fireEvent.mouseMove(element, {
     clientX: endX,
-    clientY: endY,
-    button: 0 // Left button
+    clientY: endY
   });
   
-  // Simulate mouse up
+  // Simulate mouse up at the end position
   fireEvent.mouseUp(element, {
     clientX: endX,
-    clientY: endY,
-    button: 0 // Left button
+    clientY: endY
   });
 }
 
@@ -159,173 +187,185 @@ export async function simulatePan(
  * Simulates a selection interaction on a visualization
  * 
  * @param element - The element to select on
- * @param options - Options for the selection
+ * @param startX - The starting x coordinate
+ * @param startY - The starting y coordinate
+ * @param endX - The ending x coordinate
+ * @param endY - The ending y coordinate
  * @returns A promise that resolves when the selection is complete
  * 
  * @example
  * ```tsx
- * await simulateSelection(container, {
- *   startPoint: { x: 10, y: 10 },
- *   endPoint: { x: 100, y: 100 }
- * });
+ * await simulateSelection(container, 100, 100, 200, 200);
  * ```
  */
 export async function simulateSelection(
   element: HTMLElement,
-  options: SelectionOptions
+  startX: number,
+  startY: number,
+  endX: number,
+  endY: number
 ): Promise<void> {
-  const { startPoint, endPoint } = options;
-  
-  // Simulate mouse down at start point
+  // Simulate mouse down at the start position with shift key
   fireEvent.mouseDown(element, {
-    clientX: startPoint.x,
-    clientY: startPoint.y,
-    button: 0 // Left button
+    clientX: startX,
+    clientY: startY,
+    shiftKey: true
   });
   
-  // Simulate mouse move to end point
+  // Simulate mouse move to the end position
   fireEvent.mouseMove(element, {
-    clientX: endPoint.x,
-    clientY: endPoint.y,
-    button: 0 // Left button
+    clientX: endX,
+    clientY: endY,
+    shiftKey: true
   });
   
-  // Simulate mouse up at end point
+  // Simulate mouse up at the end position
   fireEvent.mouseUp(element, {
-    clientX: endPoint.x,
-    clientY: endPoint.y,
-    button: 0 // Left button
+    clientX: endX,
+    clientY: endY,
+    shiftKey: true
   });
 }
 
 /**
- * Simulates a keyboard navigation interaction on a visualization
+ * Simulates keyboard navigation on a visualization
  * 
- * @param element - The element to navigate
- * @param options - Options for the keyboard navigation
+ * @param key - The key to press
+ * @param options - Options for the keyboard event
  * @returns A promise that resolves when the keyboard navigation is complete
  * 
  * @example
  * ```tsx
- * await simulateKeyboardNavigation(container, { key: 'ArrowRight' });
+ * await simulateKeyboardNavigation('ArrowRight');
  * ```
  */
 export async function simulateKeyboardNavigation(
-  element: HTMLElement,
-  options: KeyboardNavigationOptions
+  key: string,
+  options: { ctrlKey?: boolean; shiftKey?: boolean } = {}
 ): Promise<void> {
-  const { key, shift = false, ctrl = false, alt = false } = options;
-  
-  // Focus the element first
-  element.focus();
-  
-  // Create key sequence with modifiers if needed
-  let keySequence = '';
-  if (shift) keySequence += '{Shift>}';
-  if (ctrl) keySequence += '{Control>}';
-  if (alt) keySequence += '{Alt>}';
-  
-  keySequence += `{${key}}`;
-  
-  // Release modifiers
-  if (alt) keySequence += '{/Alt}';
-  if (ctrl) keySequence += '{/Control}';
-  if (shift) keySequence += '{/Shift}';
-  
-  // Simulate key press
-  await userEvent.keyboard(keySequence);
+  const user = userEvent.setup();
+  await user.keyboard(`{${key}${options.ctrlKey ? '>Control' : ''}${options.shiftKey ? '>Shift' : ''}}`);
 }
 
 /**
- * Simulates a drag and drop interaction on a visualization
+ * Simulates a drag and drop interaction
  * 
- * @param source - The source element to drag from
- * @param target - The target element to drop on
+ * @param dragElement - The element to drag
+ * @param dropElement - The element to drop onto
  * @returns A promise that resolves when the drag and drop is complete
  * 
  * @example
  * ```tsx
- * await simulateDragAndDrop(sourceElement, targetElement);
+ * await simulateDragAndDrop(
+ *   screen.getByTestId('drag-element'),
+ *   screen.getByTestId('drop-target')
+ * );
  * ```
  */
 export async function simulateDragAndDrop(
-  source: HTMLElement,
-  target: HTMLElement
+  dragElement: HTMLElement,
+  dropElement: HTMLElement
 ): Promise<void> {
-  // Get source and target rectangles
-  const sourceRect = source.getBoundingClientRect();
-  const targetRect = target.getBoundingClientRect();
+  // Get the center coordinates of the elements
+  const dragRect = dragElement.getBoundingClientRect();
+  const dropRect = dropElement.getBoundingClientRect();
   
-  // Calculate center points
-  const sourceX = sourceRect.left + sourceRect.width / 2;
-  const sourceY = sourceRect.top + sourceRect.height / 2;
-  const targetX = targetRect.left + targetRect.width / 2;
-  const targetY = targetRect.top + targetRect.height / 2;
+  const dragX = dragRect.left + dragRect.width / 2;
+  const dragY = dragRect.top + dragRect.height / 2;
+  const dropX = dropRect.left + dropRect.width / 2;
+  const dropY = dropRect.top + dropRect.height / 2;
   
   // Simulate drag start
-  fireEvent.dragStart(source, {
-    clientX: sourceX,
-    clientY: sourceY
-  });
+  fireEvent.dragStart(dragElement);
   
-  // Simulate drag over target
-  fireEvent.dragOver(target, {
-    clientX: targetX,
-    clientY: targetY
-  });
+  // Simulate drag over the drop target
+  fireEvent.dragOver(dropElement);
   
-  // Simulate drop on target
-  fireEvent.drop(target, {
-    clientX: targetX,
-    clientY: targetY
-  });
+  // Simulate drop
+  fireEvent.drop(dropElement);
   
   // Simulate drag end
-  fireEvent.dragEnd(source, {
-    clientX: targetX,
-    clientY: targetY
-  });
+  fireEvent.dragEnd(dragElement);
 }
 
 /**
- * Simulates a hover interaction on a visualization element
+ * Simulates a resize interaction on a visualization
  * 
- * @param element - The element to hover over
- * @returns A promise that resolves when the hover is complete
- * 
- * @example
- * ```tsx
- * await simulateHover(element);
- * ```
- */
-export async function simulateHover(
-  element: HTMLElement
-): Promise<void> {
-  await userEvent.hover(element);
-}
-
-/**
- * Simulates a click interaction on a visualization element
- * 
- * @param element - The element to click
- * @param options - Options for the click
- * @returns A promise that resolves when the click is complete
+ * @param element - The element to resize
+ * @param startWidth - The starting width
+ * @param startHeight - The starting height
+ * @param endWidth - The ending width
+ * @param endHeight - The ending height
+ * @returns A promise that resolves when the resize is complete
  * 
  * @example
  * ```tsx
- * await simulateClick(element, { shift: true });
+ * await simulateResize(container, 300, 200, 400, 300);
  * ```
  */
-export async function simulateClick(
+export async function simulateResize(
   element: HTMLElement,
-  options: { shift?: boolean; ctrl?: boolean; alt?: boolean } = {}
+  startWidth: number,
+  startHeight: number,
+  endWidth: number,
+  endHeight: number
 ): Promise<void> {
-  const { shift = false, ctrl = false, alt = false } = options;
+  // Mock the resize
+  Object.defineProperty(element, 'clientWidth', { value: startWidth });
+  Object.defineProperty(element, 'clientHeight', { value: startHeight });
   
-  // Use fireEvent instead of userEvent for more control over modifiers
-  fireEvent.click(element, {
-    shiftKey: shift,
-    ctrlKey: ctrl,
-    altKey: alt
-  });
+  // Dispatch a resize event
+  window.dispatchEvent(new Event('resize'));
+  
+  // Update the dimensions
+  Object.defineProperty(element, 'clientWidth', { value: endWidth });
+  Object.defineProperty(element, 'clientHeight', { value: endHeight });
+  
+  // Dispatch another resize event
+  window.dispatchEvent(new Event('resize'));
+}
+
+/**
+ * Simulates a touch interaction on a visualization
+ * 
+ * @param element - The element to touch
+ * @param touches - The touch points
+ * @returns A promise that resolves when the touch is complete
+ * 
+ * @example
+ * ```tsx
+ * await simulateTouch(container, [
+ *   { clientX: 100, clientY: 100 },
+ *   { clientX: 200, clientY: 200 }
+ * ]);
+ * ```
+ */
+export async function simulateTouch(
+  element: HTMLElement,
+  touches: Array<{ clientX: number; clientY: number }>
+): Promise<void> {
+  // Create touch objects
+  const touchObjects = touches.map((touch, index) => ({
+    identifier: index,
+    target: element,
+    ...touch
+  }));
+  
+  // Create a touch event
+  const touchEvent = {
+    touches: touchObjects,
+    targetTouches: touchObjects,
+    changedTouches: touchObjects,
+    preventDefault: () => {},
+    stopPropagation: () => {}
+  };
+  
+  // Simulate touch start
+  fireEvent.touchStart(element, touchEvent);
+  
+  // Simulate touch move
+  fireEvent.touchMove(element, touchEvent);
+  
+  // Simulate touch end
+  fireEvent.touchEnd(element, touchEvent);
 } 

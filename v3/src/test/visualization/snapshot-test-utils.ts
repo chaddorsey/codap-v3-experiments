@@ -6,31 +6,10 @@
  */
 
 import { prettyDOM } from '@testing-library/react';
-
-// Define a simple interface for diff lines
-interface DiffLine {
-  value: string;
-  count: number;
-  added?: boolean;
-  removed?: boolean;
-}
+import { diffLines } from 'diff';
 
 // Define the diff type for our formatted differences
 type DiffType = 'added' | 'removed' | 'unchanged';
-
-// Mock the diffLines function since we don't have the actual diff library
-function diffLines(oldStr: string, newStr: string): DiffLine[] {
-  // This is a simplified implementation
-  // In a real implementation, this would use the diff library
-  if (oldStr === newStr) {
-    return [{ value: oldStr, count: oldStr.split('\n').length }];
-  }
-  
-  return [
-    { value: oldStr, count: oldStr.split('\n').length, removed: true },
-    { value: newStr, count: newStr.split('\n').length, added: true }
-  ];
-}
 
 /**
  * Options for creating a snapshot
@@ -132,18 +111,18 @@ export function compareWithBaseline(
   const differences = diffLines(baseline, snapshot);
   
   // Calculate similarity percentage
-  const totalLines = differences.reduce((sum: number, diff: DiffLine) => sum + diff.count, 0);
+  const totalLines = differences.reduce((sum: number, diff) => sum + (diff.count || 0), 0);
   const unchangedLines = differences
-    .filter((diff: DiffLine) => !diff.added && !diff.removed)
-    .reduce((sum: number, diff: DiffLine) => sum + diff.count, 0);
+    .filter((diff) => !diff.added && !diff.removed)
+    .reduce((sum: number, diff) => sum + (diff.count || 0), 0);
   
   const similarityPercentage = (unchangedLines / totalLines) * 100;
   
   // Check if the snapshot matches the baseline
-  const matches = differences.every((diff: DiffLine) => !diff.added && !diff.removed);
+  const matches = differences.every((diff) => !diff.added && !diff.removed);
   
   // Format the differences
-  const formattedDifferences = differences.map((diff: DiffLine) => {
+  const formattedDifferences = differences.map((diff) => {
     let type: DiffType = 'unchanged';
     if (diff.added) type = 'added';
     if (diff.removed) type = 'removed';

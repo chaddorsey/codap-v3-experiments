@@ -2,347 +2,245 @@
  * Performance Testing Utilities
  * 
  * This file contains utilities for performance testing visualization components in CODAP v3.
- * These utilities help with measuring rendering and interaction performance.
+ * These utilities help with measuring rendering time, interaction performance, and data update performance.
  */
 
-import React, { ComponentType, ReactElement } from 'react';
-import { render, act } from '@testing-library/react';
+import { render } from '@testing-library/react';
+import { ReactElement } from 'react';
 
 /**
- * Options for performance testing
+ * Performance measurement result
  */
-export interface PerformanceTestOptions {
+export interface PerformanceResult {
   /**
-   * The number of iterations to run
+   * Average time in milliseconds
    */
-  iterations?: number;
+  average: number;
   /**
-   * The number of warmup iterations to run before measuring
+   * Median time in milliseconds
    */
-  warmupIterations?: number;
+  median: number;
   /**
-   * Whether to log performance results to the console
+   * Minimum time in milliseconds
    */
-  logResults?: boolean;
+  min: number;
+  /**
+   * Maximum time in milliseconds
+   */
+  max: number;
+  /**
+   * All measurements in milliseconds
+   */
+  measurements: number[];
 }
 
 /**
- * Result of a performance test
- */
-export interface PerformanceTestResult {
-  /**
-   * The average time in milliseconds
-   */
-  averageTime: number;
-  /**
-   * The median time in milliseconds
-   */
-  medianTime: number;
-  /**
-   * The minimum time in milliseconds
-   */
-  minTime: number;
-  /**
-   * The maximum time in milliseconds
-   */
-  maxTime: number;
-  /**
-   * The standard deviation of the times
-   */
-  standardDeviation: number;
-  /**
-   * All measured times in milliseconds
-   */
-  times: number[];
-}
-
-/**
- * Measures the rendering performance of a component
+ * Measures the rendering performance of a visualization component
  * 
- * @param Component - The component to measure
- * @param props - The props to pass to the component
- * @param options - Options for the performance test
- * @returns A promise that resolves to the performance test result
+ * @param component - The component to measure
+ * @param iterations - The number of iterations to run
+ * @returns A promise that resolves to the performance result
  * 
  * @example
  * ```tsx
- * const result = await measureRenderingPerformance(
- *   ScatterPlot,
- *   { data: testData },
- *   { iterations: 10 }
- * );
- * 
- * expect(result.medianTime).toBeLessThan(50);
+ * const result = await measureRenderingPerformance(<ScatterPlot data={data} />, 10);
+ * console.log(`Average rendering time: ${result.average}ms`);
  * ```
  */
-export async function measureRenderingPerformance<P extends object>(
-  Component: ComponentType<P>,
-  props: P,
-  options: PerformanceTestOptions = {}
-): Promise<PerformanceTestResult> {
-  const { iterations = 5, warmupIterations = 2, logResults = false } = options;
-  
-  // Create a container for rendering
-  const container = document.createElement('div');
-  document.body.appendChild(container);
-  
-  // Run warmup iterations
-  for (let i = 0; i < warmupIterations; i++) {
-    const element = React.createElement(Component, props);
-    render(element, { container });
-    container.innerHTML = '';
-  }
-  
-  // Measure rendering performance
-  const times: number[] = [];
+export async function measureRenderingPerformance(
+  component: ReactElement,
+  iterations: number = 5
+): Promise<PerformanceResult> {
+  const measurements: number[] = [];
   
   for (let i = 0; i < iterations; i++) {
-    // Measure the time it takes to render the component
-    const startTime = performance.now();
+    // Clean up previous render if any
+    if (i > 0) {
+      document.body.innerHTML = '';
+    }
     
-    await act(async () => {
-      const element = React.createElement(Component, props);
-      render(element, { container });
-    });
+    // Measure rendering time
+    const start = performance.now();
+    render(component);
+    const end = performance.now();
     
-    const endTime = performance.now();
-    times.push(endTime - startTime);
-    
-    // Clean up
-    container.innerHTML = '';
+    measurements.push(end - start);
   }
   
-  // Clean up the container
-  document.body.removeChild(container);
-  
-  // Calculate statistics
-  const result = calculatePerformanceStatistics(times);
-  
-  // Log results if requested
-  if (logResults) {
-    console.log(`Rendering performance for ${Component.name || 'Component'}:`);
-    console.log(`  Average: ${result.averageTime.toFixed(2)}ms`);
-    console.log(`  Median: ${result.medianTime.toFixed(2)}ms`);
-    console.log(`  Min: ${result.minTime.toFixed(2)}ms`);
-    console.log(`  Max: ${result.maxTime.toFixed(2)}ms`);
-    console.log(`  Standard Deviation: ${result.standardDeviation.toFixed(2)}ms`);
-  }
-  
-  return result;
+  return calculatePerformanceResult(measurements);
 }
 
 /**
- * Measures the interaction performance of a component
+ * Measures the interaction performance of a visualization component
  * 
- * @param element - The element to interact with
- * @param interaction - The interaction function to measure
- * @param options - Options for the performance test
- * @returns A promise that resolves to the performance test result
+ * @param component - The component to measure
+ * @param interactionFn - The interaction function to measure
+ * @param iterations - The number of iterations to run
+ * @returns A promise that resolves to the performance result
  * 
  * @example
  * ```tsx
- * const interaction = async () => {
- *   await simulateZoom(container, { factor: 1.2 });
- * };
- * 
+ * const { container } = render(<ScatterPlot data={data} />);
  * const result = await measureInteractionPerformance(
  *   container,
- *   interaction,
- *   { iterations: 5 }
+ *   async () => {
+ *     await simulateZoom(container, 2, 100, 100);
+ *   },
+ *   10
  * );
- * 
- * expect(result.medianTime).toBeLessThan(20);
+ * console.log(`Average interaction time: ${result.average}ms`);
  * ```
  */
 export async function measureInteractionPerformance(
-  element: HTMLElement,
-  interaction: () => Promise<void>,
-  options: PerformanceTestOptions = {}
-): Promise<PerformanceTestResult> {
-  const { iterations = 5, warmupIterations = 2, logResults = false } = options;
-  
-  // Run warmup iterations
-  for (let i = 0; i < warmupIterations; i++) {
-    await interaction();
-  }
-  
-  // Measure interaction performance
-  const times: number[] = [];
+  container: HTMLElement,
+  interactionFn: () => Promise<void>,
+  iterations: number = 5
+): Promise<PerformanceResult> {
+  const measurements: number[] = [];
   
   for (let i = 0; i < iterations; i++) {
-    // Measure the time it takes to perform the interaction
-    const startTime = performance.now();
+    // Measure interaction time
+    const start = performance.now();
+    await interactionFn();
+    const end = performance.now();
     
-    await act(async () => {
-      await interaction();
-    });
-    
-    const endTime = performance.now();
-    times.push(endTime - startTime);
+    measurements.push(end - start);
   }
   
-  // Calculate statistics
-  const result = calculatePerformanceStatistics(times);
-  
-  // Log results if requested
-  if (logResults) {
-    console.log('Interaction performance:');
-    console.log(`  Average: ${result.averageTime.toFixed(2)}ms`);
-    console.log(`  Median: ${result.medianTime.toFixed(2)}ms`);
-    console.log(`  Min: ${result.minTime.toFixed(2)}ms`);
-    console.log(`  Max: ${result.maxTime.toFixed(2)}ms`);
-    console.log(`  Standard Deviation: ${result.standardDeviation.toFixed(2)}ms`);
-  }
-  
-  return result;
+  return calculatePerformanceResult(measurements);
 }
 
 /**
- * Measures the data update performance of a component
+ * Measures the data update performance of a visualization component
  * 
- * @param element - The element to update
- * @param dataUpdate - The function to update the data
- * @param initialData - The initial data
- * @param updateCallback - The function to call to update the component
- * @param options - Options for the performance test
- * @returns A promise that resolves to the performance test result
+ * @param updateFn - The function that updates the data
+ * @param iterations - The number of iterations to run
+ * @returns A promise that resolves to the performance result
  * 
  * @example
  * ```tsx
- * const updateData = (data) => {
- *   return data.map(point => ({
- *     ...point,
- *     y: point.y + 1
- *   }));
- * };
- * 
  * const result = await measureDataUpdatePerformance(
- *   container,
- *   updateData,
- *   testData,
- *   setData,
- *   { iterations: 5 }
+ *   async () => {
+ *     // Update the data
+ *     dataStore.updateData(newData);
+ *     // Wait for the component to re-render
+ *     await waitFor(() => screen.getByTestId('data-point-10'));
+ *   },
+ *   10
  * );
- * 
- * expect(result.medianTime).toBeLessThan(30);
+ * console.log(`Average data update time: ${result.average}ms`);
  * ```
  */
-export async function measureDataUpdatePerformance<T>(
-  element: HTMLElement,
-  dataUpdate: (data: T) => T,
-  initialData: T,
-  updateCallback: (data: T) => void,
-  options: PerformanceTestOptions = {}
-): Promise<PerformanceTestResult> {
-  const { iterations = 5, warmupIterations = 2, logResults = false } = options;
-  
-  // Make a copy of the initial data
-  let data = { ...initialData } as T;
-  
-  // Run warmup iterations
-  for (let i = 0; i < warmupIterations; i++) {
-    data = dataUpdate(data);
-    updateCallback(data);
-  }
-  
-  // Measure data update performance
-  const times: number[] = [];
+export async function measureDataUpdatePerformance(
+  updateFn: () => Promise<void>,
+  iterations: number = 5
+): Promise<PerformanceResult> {
+  const measurements: number[] = [];
   
   for (let i = 0; i < iterations; i++) {
-    // Update the data
-    data = dataUpdate(data);
+    // Measure data update time
+    const start = performance.now();
+    await updateFn();
+    const end = performance.now();
     
-    // Measure the time it takes to update the component
-    const startTime = performance.now();
-    
-    await act(async () => {
-      updateCallback(data);
-    });
-    
-    const endTime = performance.now();
-    times.push(endTime - startTime);
+    measurements.push(end - start);
   }
   
-  // Calculate statistics
-  const result = calculatePerformanceStatistics(times);
-  
-  // Log results if requested
-  if (logResults) {
-    console.log('Data update performance:');
-    console.log(`  Average: ${result.averageTime.toFixed(2)}ms`);
-    console.log(`  Median: ${result.medianTime.toFixed(2)}ms`);
-    console.log(`  Min: ${result.minTime.toFixed(2)}ms`);
-    console.log(`  Max: ${result.maxTime.toFixed(2)}ms`);
-    console.log(`  Standard Deviation: ${result.standardDeviation.toFixed(2)}ms`);
-  }
-  
-  return result;
+  return calculatePerformanceResult(measurements);
 }
 
 /**
- * Creates a performance report from a performance test result
+ * Measures the zoom performance of a visualization component
  * 
- * @param testName - The name of the test
- * @param result - The performance test result
- * @returns A formatted performance report
+ * @param container - The container element
+ * @param zoomFn - The function that performs the zoom
+ * @param iterations - The number of iterations to run
+ * @returns A promise that resolves to the performance result
  * 
  * @example
  * ```tsx
- * const report = createPerformanceReport('Scatter Plot Rendering', result);
+ * const { container } = render(<ScatterPlot data={data} />);
+ * const result = await measureZoomPerformance(
+ *   container,
+ *   async () => {
+ *     await simulateZoom(container, 2, 100, 100);
+ *   },
+ *   10
+ * );
+ * console.log(`Average zoom time: ${result.average}ms`);
+ * ```
+ */
+export async function measureZoomPerformance(
+  container: HTMLElement,
+  zoomFn: () => Promise<void>,
+  iterations: number = 5
+): Promise<PerformanceResult> {
+  return measureInteractionPerformance(container, zoomFn, iterations);
+}
+
+/**
+ * Creates a performance report from multiple performance results
+ * 
+ * @param results - The performance results
+ * @returns The performance report
+ * 
+ * @example
+ * ```tsx
+ * const renderingResult = await measureRenderingPerformance(<ScatterPlot data={data} />, 10);
+ * const zoomResult = await measureZoomPerformance(container, zoomFn, 10);
+ * const report = createPerformanceReport({
+ *   rendering: renderingResult,
+ *   zoom: zoomResult
+ * });
  * console.log(report);
  * ```
  */
 export function createPerformanceReport(
-  testName: string,
-  result: PerformanceTestResult
+  results: Record<string, PerformanceResult>
 ): string {
-  return `
-Performance Test: ${testName}
----------------------------
-Average: ${result.averageTime.toFixed(2)}ms
-Median: ${result.medianTime.toFixed(2)}ms
-Min: ${result.minTime.toFixed(2)}ms
-Max: ${result.maxTime.toFixed(2)}ms
-Standard Deviation: ${result.standardDeviation.toFixed(2)}ms
-Sample Size: ${result.times.length}
-`.trim();
+  let report = 'Performance Report\n';
+  report += '=================\n\n';
+  
+  for (const [name, result] of Object.entries(results)) {
+    report += `${name}:\n`;
+    report += `  Average: ${result.average.toFixed(2)}ms\n`;
+    report += `  Median: ${result.median.toFixed(2)}ms\n`;
+    report += `  Min: ${result.min.toFixed(2)}ms\n`;
+    report += `  Max: ${result.max.toFixed(2)}ms\n`;
+    report += '\n';
+  }
+  
+  return report;
 }
 
 /**
- * Calculates performance statistics from an array of times
+ * Calculates the performance result from measurements
  * 
- * @param times - The array of times
- * @returns The performance statistics
+ * @param measurements - The measurements
+ * @returns The performance result
  */
-function calculatePerformanceStatistics(times: number[]): PerformanceTestResult {
-  // Sort the times for median and min/max
-  const sortedTimes = [...times].sort((a, b) => a - b);
+function calculatePerformanceResult(measurements: number[]): PerformanceResult {
+  // Sort measurements for median calculation
+  const sortedMeasurements = [...measurements].sort((a, b) => a - b);
   
   // Calculate average
-  const sum = sortedTimes.reduce((acc, time) => acc + time, 0);
-  const average = sum / sortedTimes.length;
+  const average = measurements.reduce((sum, time) => sum + time, 0) / measurements.length;
   
   // Calculate median
-  const middle = Math.floor(sortedTimes.length / 2);
-  const median = sortedTimes.length % 2 === 0
-    ? (sortedTimes[middle - 1] + sortedTimes[middle]) / 2
-    : sortedTimes[middle];
+  const middle = Math.floor(sortedMeasurements.length / 2);
+  const median = sortedMeasurements.length % 2 === 0
+    ? (sortedMeasurements[middle - 1] + sortedMeasurements[middle]) / 2
+    : sortedMeasurements[middle];
   
   // Calculate min and max
-  const min = sortedTimes[0];
-  const max = sortedTimes[sortedTimes.length - 1];
-  
-  // Calculate standard deviation
-  const squaredDifferences = sortedTimes.map(time => Math.pow(time - average, 2));
-  const variance = squaredDifferences.reduce((acc, val) => acc + val, 0) / sortedTimes.length;
-  const standardDeviation = Math.sqrt(variance);
+  const min = sortedMeasurements[0];
+  const max = sortedMeasurements[sortedMeasurements.length - 1];
   
   return {
-    averageTime: average,
-    medianTime: median,
-    minTime: min,
-    maxTime: max,
-    standardDeviation,
-    times: sortedTimes
+    average,
+    median,
+    min,
+    max,
+    measurements
   };
 } 
