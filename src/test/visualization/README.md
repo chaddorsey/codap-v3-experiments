@@ -142,16 +142,18 @@ test('handles empty data set gracefully', () => {
 
 ## Examples
 
-See the `examples` directory for example visualization components and tests that demonstrate how to use these utilities.
+The `examples` directory contains a simple scatter plot example that demonstrates how to use these utilities. This example is for demonstration purposes only and should not be used in production.
 
 - **scatter-plot-example.tsx**: A simple scatter plot component for testing
 - **scatter-plot-example.test.tsx**: Tests for the scatter plot example
 
-## Contributing
+## Testing Existing Components
 
-When adding new visualization components to CODAP v3, please follow these guidelines:
+When testing existing visualization components in CODAP v3, follow these guidelines:
 
-1. Add appropriate data-testid attributes to key elements
+1. Identify key elements that need data-testid attributes for testing
 2. Write comprehensive tests using the utilities in this directory
 3. Test rendering, performance, interactions, and edge cases
-4. Document any special testing considerations for your component 
+4. Document any special testing considerations for each component
+
+The utilities in this directory are designed to work with existing components and do not require creating new components for testing purposes. 
