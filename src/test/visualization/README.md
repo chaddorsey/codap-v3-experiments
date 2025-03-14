@@ -34,7 +34,7 @@ Based on the codebase analysis, we need to test the following visualization comp
    - Status: Initial tests created ✅
 
 4. **Case Plot** (`v3/src/components/graph/plots/case-plot/case-plot.tsx`)
-   - Status: Not tested yet
+   - Status: Initial tests created ✅
 
 5. **Binned Dot Plot** (`v3/src/components/graph/plots/binned-dot-plot/binned-dot-plot.tsx`)
    - Status: Not tested yet
@@ -87,7 +87,7 @@ For each visualization component, we should test:
 - [x] Create test for Scatter Plot component
 - [x] Create test for Bar Chart component
 - [x] Create test for Dot Plot component
-- [ ] Create test for Case Plot component
+- [x] Create test for Case Plot component
 - [ ] Create test for Binned Dot Plot component
 - [ ] Create test for Dot Chart component
 
