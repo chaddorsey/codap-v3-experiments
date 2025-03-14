@@ -7,9 +7,12 @@
 import React from 'react';
 import { render, RenderOptions, RenderResult, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ICase } from '../../models/data/data-set-types';
-import { DataSet } from '../../models/data/data-set';
-import { ITestDataSet } from '../data/testDataUtils';
+import { Instance } from 'mobx-state-tree';
+import { ICase } from '../../../v3/src/models/data/data-set-types';
+import { DataSet } from '../../../v3/src/models/data/data-set';
+
+// Define our own ITestDataSet interface using the Instance type
+type ITestDataSet = Instance<typeof DataSet>;
 
 /**
  * Visualization-specific test utilities
@@ -63,7 +66,7 @@ export function renderVisualization<P>(
     ...renderOptions
   } = options;
 
-  const result = render(<Component {...props} />, renderOptions);
+  const result = render(React.createElement(Component, props), renderOptions);
   const { container } = result;
 
   return {
@@ -187,7 +190,7 @@ export function createTestVisualization(
     colorAttribute?: string;
     sizeAttribute?: string;
   }
-): JSX.Element {
+): React.ReactElement {
   // This is a placeholder implementation
   // In a real implementation, this would create a visualization component
   // with the provided dataset and options

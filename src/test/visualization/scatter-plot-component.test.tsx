@@ -6,6 +6,7 @@
 
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
+import * as PIXI from 'pixi.js';
 import { 
   measureRenderingPerformance, 
   createPerformanceReport,
@@ -128,13 +129,84 @@ interface TestDataPoint {
 
 // Create a mock for PixiPoints
 interface MockPixiPoints {
+  // Properties
+  renderer?: PIXI.Renderer;
   stage: any;
   pointsContainer: any;
   background: any;
-  subPlotMasks: any;
+  subPlotMasks: any[];
+  ticker: any;
+  tickerStopTimeoutId: number | undefined;
+  isSafari: boolean;
+  mostRecentSvgElement: SVGElement | null;
+  pointMetadata: Map<any, any>;
+  caseDataToPoint: Map<string, any>;
+  textures: Map<string, any>;
+  displayType: "points" | "bars";
+  pointsFusedIntoBars: boolean;
+  anchor: { x: number; y: number };
+  displayTypeTransitionState: { isActive: boolean };
+  pointTransitionStates: Map<any, any>;
+  resizeObserver?: ResizeObserver;
+  currentTransition?: any;
+  targetProp: any;
+  startProp: any;
+  onPointOver?: any;
+  onPointLeave?: any;
+  onPointClick?: any;
+  onPointDragStart?: any;
+  onPointDrag?: any;
+  onPointDragEnd?: any;
+  animationFrames: Map<any, number>;
+  
+  // Methods
   data: TestDataPoint[];
+  init: jest.Mock;
+  get canvas(): HTMLCanvasElement | null;
+  get points(): any[];
+  get pointsCount(): number;
+  get anyTransitionActive(): boolean;
+  tick: jest.Mock;
+  resize: jest.Mock;
+  setVisibility: jest.Mock;
+  get isVisible(): boolean;
+  startRendering: jest.Mock;
+  forEachPoint: jest.Mock;
+  forEachSelectedPoint: jest.Mock;
   getPointForCaseData: jest.Mock;
+  setPointForCaseData: jest.Mock;
+  deletePointForCaseData: jest.Mock;
   setPointPosition: jest.Mock;
+  setPointScale: jest.Mock;
+  setPointAnchor: jest.Mock;
+  setPointDimensionsForTransition: jest.Mock;
+  setAllPointsScale: jest.Mock;
+  setPointXyProperty: jest.Mock;
+  setTargetXyProp: jest.Mock;
+  setPointRaised: jest.Mock;
+  transitionPointDisplayType: jest.Mock;
+  setPositionOrTransition: jest.Mock;
+  setPointStyle: jest.Mock;
+  setPointSubPlot: jest.Mock;
+  transition: jest.Mock;
+  getMetadata: jest.Mock;
+  getNewSprite: jest.Mock;
+  textureKey: jest.Mock;
+  updatePointStyle: jest.Mock;
+  generateTexture: jest.Mock;
+  getRectTexture: jest.Mock;
+  getCircleTexture: jest.Mock;
+  getPointTexture: jest.Mock;
+  cleanupUnusedTextures: jest.Mock;
+  dispatchEvent: jest.Mock;
+  setupBackgroundEventDistribution: jest.Mock;
+  requestAnimationFrame: jest.Mock;
+  cancelAnimationFrame: jest.Mock;
+  dispatchForSafari: jest.Mock;
+  setupSpriteInteractivity: jest.Mock;
+  matchPointsToData: jest.Mock;
+  setPointsMask: jest.Mock;
+  dispose: jest.Mock;
   addPoint: jest.Mock;
   removePoint: jest.Mock;
   updatePointAppearance: jest.Mock;
@@ -159,12 +231,75 @@ describe('CODAP v3 Scatter Plot Component', () => {
   // Create a mock pixiPoints object with our test data
   const createMockPixiPoints = (data: TestDataPoint[]): MockPixiPoints => ({
     data,
+    // Properties
+    renderer: undefined,
     stage: {},
     pointsContainer: {},
     background: {},
-    subPlotMasks: {},
+    subPlotMasks: [],
+    ticker: {},
+    tickerStopTimeoutId: undefined,
+    isSafari: false,
+    mostRecentSvgElement: null,
+    pointMetadata: new Map(),
+    caseDataToPoint: new Map(),
+    textures: new Map(),
+    displayType: "points",
+    pointsFusedIntoBars: false,
+    anchor: { x: 0.5, y: 0.5 },
+    displayTypeTransitionState: { isActive: false },
+    pointTransitionStates: new Map(),
+    targetProp: {},
+    startProp: {},
+    animationFrames: new Map(),
+    
+    // Methods
+    init: jest.fn(),
+    get canvas() { return null; },
+    get points() { return []; },
+    get pointsCount() { return 0; },
+    get anyTransitionActive() { return false; },
+    get isVisible() { return true; },
+    tick: jest.fn(),
+    resize: jest.fn(),
+    setVisibility: jest.fn(),
+    startRendering: jest.fn(),
+    forEachPoint: jest.fn(),
+    forEachSelectedPoint: jest.fn(),
     getPointForCaseData: jest.fn(),
+    setPointForCaseData: jest.fn(),
+    deletePointForCaseData: jest.fn(),
     setPointPosition: jest.fn(),
+    setPointScale: jest.fn(),
+    setPointAnchor: jest.fn(),
+    setPointDimensionsForTransition: jest.fn(),
+    setAllPointsScale: jest.fn(),
+    setPointXyProperty: jest.fn(),
+    setTargetXyProp: jest.fn(),
+    setPointRaised: jest.fn(),
+    transitionPointDisplayType: jest.fn(),
+    setPositionOrTransition: jest.fn(),
+    setPointStyle: jest.fn(),
+    setPointSubPlot: jest.fn(),
+    transition: jest.fn(),
+    getMetadata: jest.fn(),
+    getNewSprite: jest.fn(),
+    textureKey: jest.fn(),
+    updatePointStyle: jest.fn(),
+    generateTexture: jest.fn(),
+    getRectTexture: jest.fn(),
+    getCircleTexture: jest.fn(),
+    getPointTexture: jest.fn(),
+    cleanupUnusedTextures: jest.fn(),
+    dispatchEvent: jest.fn(),
+    setupBackgroundEventDistribution: jest.fn(),
+    requestAnimationFrame: jest.fn(),
+    cancelAnimationFrame: jest.fn(),
+    dispatchForSafari: jest.fn(),
+    setupSpriteInteractivity: jest.fn(),
+    matchPointsToData: jest.fn(),
+    setPointsMask: jest.fn(),
+    dispose: jest.fn(),
     addPoint: jest.fn(),
     removePoint: jest.fn(),
     updatePointAppearance: jest.fn(),
@@ -181,7 +316,11 @@ describe('CODAP v3 Scatter Plot Component', () => {
   // Basic rendering test
   test('renders scatter plot component', () => {
     const mockPixiPoints = createMockPixiPoints(testData);
-    render(<ScatterPlot pixiPoints={mockPixiPoints} />);
+    const abovePointsGroupRef = React.createRef<SVGGElement>();
+    render(React.createElement(ScatterPlot, { 
+      pixiPoints: mockPixiPoints, 
+      abovePointsGroupRef: abovePointsGroupRef 
+    }));
     
     // Since the actual component doesn't add data-testid attributes,
     // we can only verify that it renders without errors
@@ -191,12 +330,13 @@ describe('CODAP v3 Scatter Plot Component', () => {
   // Performance test
   test('measures rendering performance', async () => {
     const mockPixiPoints = createMockPixiPoints(testData);
+    const abovePointsGroupRef = React.createRef<SVGGElement>();
     
     // This is a simplified example - in a real test, we would need to
     // properly mock all the dependencies and measure actual rendering performance
     const result = await measureRenderingPerformance(
       ScatterPlot,
-      { pixiPoints: mockPixiPoints },
+      { pixiPoints: mockPixiPoints, abovePointsGroupRef },
       { iterations: 3, warmupIterations: 1 }
     );
     
@@ -209,10 +349,15 @@ describe('CODAP v3 Scatter Plot Component', () => {
 
   // Test with different data sizes
   test('handles different data sizes', () => {
+    const abovePointsGroupRef = React.createRef<SVGGElement>();
+    
     // Empty data
     const emptyData: TestDataPoint[] = [];
     const emptyPixiPoints = createMockPixiPoints(emptyData);
-    render(<ScatterPlot pixiPoints={emptyPixiPoints} />);
+    render(React.createElement(ScatterPlot, { 
+      pixiPoints: emptyPixiPoints, 
+      abovePointsGroupRef: abovePointsGroupRef 
+    }));
     
     // Large data set
     const largeData: TestDataPoint[] = Array.from({ length: 100 }, (_, i) => ({
@@ -221,7 +366,10 @@ describe('CODAP v3 Scatter Plot Component', () => {
       y: Math.random() * 10
     }));
     const largePixiPoints = createMockPixiPoints(largeData);
-    render(<ScatterPlot pixiPoints={largePixiPoints} />);
+    render(React.createElement(ScatterPlot, { 
+      pixiPoints: largePixiPoints, 
+      abovePointsGroupRef: abovePointsGroupRef 
+    }));
     
     // Both should render without errors
     expect(document.body).toBeTruthy();
@@ -230,12 +378,16 @@ describe('CODAP v3 Scatter Plot Component', () => {
   // Test with mock interactions
   test('handles point interactions', () => {
     const mockPixiPoints = createMockPixiPoints(testData);
+    const abovePointsGroupRef = React.createRef<SVGGElement>();
     mockPixiPoints.getPointForCaseData.mockReturnValue({
       on: jest.fn(),
       off: jest.fn()
     });
     
-    render(<ScatterPlot pixiPoints={mockPixiPoints} />);
+    render(React.createElement(ScatterPlot, { 
+      pixiPoints: mockPixiPoints, 
+      abovePointsGroupRef: abovePointsGroupRef 
+    }));
     
     // Since we can't directly interact with PIXI points in JSDOM,
     // we can only verify that the component renders without errors
