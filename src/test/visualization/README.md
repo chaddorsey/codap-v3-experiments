@@ -25,30 +25,30 @@ The visualization testing framework provides tools for testing various aspects o
 Based on the codebase analysis, we need to test the following visualization components:
 
 1. **Scatter Plot** (`v3/src/components/graph/plots/scatter-plot/scatter-plot.tsx`)
-   - Status: Initial tests created
+   - Status: Initial tests created ✅
 
 2. **Bar Chart** (`v3/src/components/graph/plots/bar-chart/bar-chart.tsx`)
+   - Status: Initial tests created ✅
+
+3. **Dot Plot** (`v3/src/components/graph/plots/dot-plot/dot-line-plot.tsx`)
+   - Status: Initial tests created ✅
+
+4. **Case Plot** (`v3/src/components/graph/plots/case-plot/case-plot.tsx`)
    - Status: Not tested yet
 
-3. **Line Plot** (`v3/src/components/graph/plots/line-plot/line-plot.tsx`)
+5. **Binned Dot Plot** (`v3/src/components/graph/plots/binned-dot-plot/binned-dot-plot.tsx`)
    - Status: Not tested yet
 
-4. **Dot Plot** (`v3/src/components/graph/plots/dot-plot/dot-plot.tsx`)
+6. **Dot Chart** (`v3/src/components/graph/plots/dot-chart/dot-chart.tsx`)
    - Status: Not tested yet
 
-5. **Histogram** (`v3/src/components/graph/plots/histogram/histogram.tsx`)
+7. **Line Plot** (`v3/src/components/graph/plots/line-plot/line-plot.tsx`)
    - Status: Not tested yet
 
-6. **Case Plot** (`v3/src/components/graph/plots/case-plot/case-plot.tsx`)
+8. **Histogram** (`v3/src/components/graph/plots/histogram/histogram.tsx`)
    - Status: Not tested yet
 
-7. **Dot Chart** (`v3/src/components/graph/plots/dot-chart/dot-chart.tsx`)
-   - Status: Not tested yet
-
-8. **Dot Line Plot** (`v3/src/components/graph/plots/dot-line-plot/dot-line-plot.tsx`)
-   - Status: Not tested yet
-
-9. **Binned Dot Plot** (`v3/src/components/graph/plots/binned-dot-plot/binned-dot-plot.tsx`)
+9. **Dot Line Plot** (`v3/src/components/graph/plots/dot-line-plot/dot-line-plot.tsx`)
    - Status: Not tested yet
 
 ### Testing Aspects for Each Component
@@ -85,16 +85,16 @@ For each visualization component, we should test:
 
 ### High Priority
 - [x] Create test for Scatter Plot component
-- [ ] Create test for Bar Chart component
-- [ ] Create test for Line Plot component
-- [ ] Create test for Histogram component
+- [x] Create test for Bar Chart component
+- [x] Create test for Dot Plot component
+- [ ] Create test for Case Plot component
+- [ ] Create test for Binned Dot Plot component
+- [ ] Create test for Dot Chart component
 
 ### Medium Priority
-- [ ] Create test for Dot Plot component
-- [ ] Create test for Case Plot component
-- [ ] Create test for Dot Chart component
+- [ ] Create test for Line Plot component
+- [ ] Create test for Histogram component
 - [ ] Create test for Dot Line Plot component
-- [ ] Create test for Binned Dot Plot component
 
 ### Low Priority
 - [ ] Add integration tests for multiple visualizations working together
